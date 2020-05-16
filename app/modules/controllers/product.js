@@ -14,7 +14,10 @@ module.exports = app => {
                 where: {$and: {shop_id: req.user.object.id}},
                 limit: parseInt(req.query.pageSize),
                 offset: req.query.pageNumber * req.query.pageSize,
-                include: [{model: Variation, include: [{model: VariationOption, as: 'options'}]}, {model: Complement}]
+                include: [
+                    {model: Variation, include: [{model: VariationOption, as: 'options'}]},
+                    {model: Complement}
+                ]
             }
 
             try {
@@ -57,35 +60,11 @@ module.exports = app => {
                 const Product = await Model.findOne({where: {id: query.id}});
 
                 if (complements) {
-                    Product.setComplements(complements.map(comp => comp.id));
+                    await Product.setComplements(complements.map(comp => comp.id));
                 }
 
                 if (variations) {
-                    // Variation.destroy({where: {product_id: query.id, id: {$notIn: variations.filter(e => e.id).map(e => e.id)}}})
-                    // for (const variation of variations) {
-                    //     const options = variation.options
-                    //     delete variation.options
-                    //
-                    //     if (variation.id) {
-                    //         Variation.update(variation, {where: {id: variation.id}})
-                    //     } else {
-                    //         variation.product_id = query.id
-                    //         variation.id = ((await Variation.create(variation)).get({plain: true}).id)
-                    //     }
-                    //
-                    //     if (options) {
-                    //         VariationOption.destroy({where: {variation_id: variation.id, id: {$notIn: options.filter(e => e.id).map(e => e.id)}}})
-                    //         for (const option of options) {
-                    //             option.variation_id = variation.id
-                    //
-                    //             if (option.id) {
-                    //                 VariationOption.update(option, {where: {id: option.id}})
-                    //             } else {
-                    //                 VariationOption.create(option)
-                    //             }
-                    //         }
-                    //     }
-                    // }
+                    await Product.setVariations(variations.map(variation => variation.id));
                 }
 
                 Persistence.update(query, req.body, res)
@@ -108,39 +87,24 @@ module.exports = app => {
 
             req.body.shop_id = req.user.object.id
 
-            const productId = (await Model.create(req.body)).get({plain: true}).id
+            const Product = await Model.create(req.body)
+            const productId = Product.id
 
             if (complements) {
-                for (const complement of complements) {
-                    complement.product_id = productId
-                    Complement.create(complement)
-                }
+                await Product.setComplements(complements.map(comp => comp.id));
             }
 
             if (variations) {
-                for (const variation of variations) {
-                    const options = variation.options
-                    delete variation.options
-
-                    variation.product_id = productId
-                    variation.id = ((await Variation.create(variation)).get({plain: true}).id)
-
-                    if (options) {
-                        VariationOption.destroy({where: {variation_id: variation.id, id: {$notIn: options.filter(e => e.id).map(e => e.id)}}})
-                        for (const option of options) {
-                            option.variation_id = variation.id
-
-                            if (option.id) {
-                                VariationOption.update(option, {where: {id: option.id}})
-                            } else {
-                                VariationOption.create(option)
-                            }
-                        }
-                    }
-                }
+                await Product.setVariations(variations.map(variation => variation.id));
             }
 
-            res.status(201).json((await Model.findOne({where: {id: productId}, include: {all: true}})))
+            res.status(201).json((await Model.findOne({
+                where: {id: productId},
+                include: [
+                    {model: Variation, include: [{model: VariationOption, as: 'options'}]},
+                    {model: Complement}
+                ]
+            })))
         }
     }
 }

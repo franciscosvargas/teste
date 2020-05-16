@@ -1,11 +1,13 @@
 module.exports = app => {
     const Model = app.datasource.models.complement_groups
+    const Complement = app.datasource.models.complements
     const Persistence = require('../../helpers/persistence')(Model)
 
     return {
         findAll: (req, res) => {
             const query = {
-                where: {shop_id: req.user.object.id}
+                where: {shop_id: req.user.object.id},
+                include: [{model: Complement, as: 'complements'}]
             }
 
             Model.findAll(query)
@@ -18,7 +20,8 @@ module.exports = app => {
         find: (req, res) => {
             const query = {
                 where: {shop_id: req.user.object.id},
-                limit: 10
+                limit: 10,
+                include: [{model: Complement, as: 'complements'}]
             }
 
             try {
@@ -54,7 +57,7 @@ module.exports = app => {
                 const ComplementGroup = await Model.findOne({where: {id: query.id}});
 
                 if (complements) {
-                    ComplementGroup.setComplements(complements.map(comp => comp.id));
+                    await ComplementGroup.setComplements(complements.map(comp => comp.id));
                 }
 
                 Persistence.update(query, req.body, res)
@@ -72,13 +75,15 @@ module.exports = app => {
 
             req.body.shop_id = req.user.object.id
 
-            req.body.complements.forEach(complement => {
-                complement.shop_id = req.body.shop_id
-            })
+            if (req.body.complements) {
+                req.body.complements.forEach(complement => {
+                    complement.shop_id = req.body.shop_id
+                })
+            }
 
             Persistence.create(req.body, res, {
                 include: [{
-                    model: app.datasource.models.complements,
+                    model: Complement,
                     as: 'complements'
                 }]
             })

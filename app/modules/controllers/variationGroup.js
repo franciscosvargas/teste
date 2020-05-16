@@ -1,8 +1,6 @@
 module.exports = app => {
-    const moment = require('moment-timezone')
-    moment.tz.setDefault('America/Recife')
-
-    const Model = app.datasource.models.variations
+    const Model = app.datasource.models.variation_groups
+    const Variation = app.datasource.models.variations
     const VariationOption = app.datasource.models.variation_options
     const Persistence = require('../../helpers/persistence')(Model)
 
@@ -10,7 +8,7 @@ module.exports = app => {
         findAll: (req, res) => {
             const query = {
                 where: {shop_id: req.user.object.id},
-                include: [{model: VariationOption, as: 'options'}]
+                include: [{model: Variation, as: 'variations', include: [{model: VariationOption, as: 'options'}]}]
             }
 
             Model.findAll(query)
@@ -24,7 +22,7 @@ module.exports = app => {
             const query = {
                 where: {shop_id: req.user.object.id},
                 limit: 10,
-                include: [{model: VariationOption, as: 'options'}]
+                include: [{model: Variation, as: 'variations', include: [{model: VariationOption, as: 'options'}]}]
             }
 
             try {
@@ -51,23 +49,16 @@ module.exports = app => {
         update: async (req, res) => {
             const query = {id: req.body.id}
             try {
-                const options = req.body.options
-
                 delete req.body._isEditMode
                 delete req.body._userId
                 delete req.body.id
 
-                if (options) {
-                    VariationOption.destroy({where: {variation_id: query.id, id: {$notIn: options.filter(e => e.id).map(e => e.id)}}})
-                    for (const option of options) {
-                        option.variation_id = query.id
+                const variations = req.body.variations
 
-                        if (option.id) {
-                            await VariationOption.update(option, {where: {id: option.id}})
-                        } else {
-                            await VariationOption.create(option)
-                        }
-                    }
+                const VariationGroup = await Model.findOne({where: {id: query.id}});
+
+                if (variations) {
+                    await VariationGroup.setVariations(variations.map(variation => variation.id));
                 }
 
                 Persistence.update(query, req.body, res)
@@ -80,22 +71,27 @@ module.exports = app => {
             Persistence.delete(req.params, res)
         },
         create: (req, res) => {
+            const variations = req.body.variations
+
             delete req.body._isEditMode
             delete req.body._userId
 
             req.body.shop_id = req.user.object.id
 
-            if (req.body.variation_group) {
-                req.body.variation_group.shop_id = req.body.shop_id
+            if (variations) {
+                variations.forEach(variation => {
+                    variation.shop_id = req.body.shop_id
+                })
             }
 
             Persistence.create(req.body, res, {
                 include: [{
-                    model: app.datasource.models.variation_groups,
-                    as: 'variation_group'
-                }, {
-                    model: VariationOption,
-                    as: 'options'
+                    model: Variation,
+                    as: 'variations',
+                    include: {
+                        model: VariationOption,
+                        as: 'options'
+                    }
                 }]
             })
         }

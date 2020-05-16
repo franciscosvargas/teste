@@ -20,13 +20,13 @@ module.exports = function (sequelize, DataTypes) {
       type: DataTypes.DATE,
       allowNull: true
     },
+    shop_id: {
+      type: DataTypes.INTEGER(11),
+      allowNull: false
+    },
     name: {
       type: DataTypes.STRING(100),
       allowNull: false
-    },
-    product_id: {
-      type: DataTypes.INTEGER(10).UNSIGNED,
-      allowNull: true
     },
     required: {
       type: DataTypes.INTEGER(1).UNSIGNED,
@@ -39,8 +39,10 @@ module.exports = function (sequelize, DataTypes) {
   }, {
     tableName: 'variations'
   })
+
   Variations.associate = (models) => {
-    Variations.hasMany(models.variation_options, {foreignKey: 'variation_id', as: 'options'})
+    Variations.hasMany(models.variation_options, {as: 'options'})
+    Variations.belongsTo(models.variation_groups, {as: 'variation_group'});
   }
 
   return Variations
