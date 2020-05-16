@@ -65,8 +65,8 @@ module.exports = function (sequelize, DataTypes) {
     })
 
     Products.associate = (models) => {
-        Products.hasMany(models.complements)
-        Products.hasMany(models.variations)
+        Products.belongsToMany(models.complements, {through: 're_product_complements'})
+        Products.belongsToMany(models.variations, {through: 're_product_variations'})
     }
 
     return Products

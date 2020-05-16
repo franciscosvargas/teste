@@ -54,44 +54,38 @@ module.exports = app => {
                     delete req.body.image_url
                 }
 
+                const Product = await Model.findOne({where: {id: query.id}});
+
                 if (complements) {
-                    Complement.destroy({where: {product_id: query.id, id: {$notIn: complements.filter(e => e.id).map(e => e.id)}}})
-                    for (const complement of complements) {
-                        if (complement.id) {
-                            Complement.update(complement, {where: {id: complement.id}})
-                        } else {
-                            complement.product_id = query.id
-                            Complement.create(complement)
-                        }
-                    }
+                    Product.setComplements(complements.map(comp => comp.id));
                 }
 
                 if (variations) {
-                    Variation.destroy({where: {product_id: query.id, id: {$notIn: variations.filter(e => e.id).map(e => e.id)}}})
-                    for (const variation of variations) {
-                        const options = variation.options
-                        delete variation.options
-
-                        if (variation.id) {
-                            Variation.update(variation, {where: {id: variation.id}})
-                        } else {
-                            variation.product_id = query.id
-                            variation.id = ((await Variation.create(variation)).get({plain: true}).id)
-                        }
-
-                        if (options) {
-                            VariationOption.destroy({where: {variation_id: variation.id, id: {$notIn: options.filter(e => e.id).map(e => e.id)}}})
-                            for (const option of options) {
-                                option.variation_id = variation.id
-
-                                if (option.id) {
-                                    VariationOption.update(option, {where: {id: option.id}})
-                                } else {
-                                    VariationOption.create(option)
-                                }
-                            }
-                        }
-                    }
+                    // Variation.destroy({where: {product_id: query.id, id: {$notIn: variations.filter(e => e.id).map(e => e.id)}}})
+                    // for (const variation of variations) {
+                    //     const options = variation.options
+                    //     delete variation.options
+                    //
+                    //     if (variation.id) {
+                    //         Variation.update(variation, {where: {id: variation.id}})
+                    //     } else {
+                    //         variation.product_id = query.id
+                    //         variation.id = ((await Variation.create(variation)).get({plain: true}).id)
+                    //     }
+                    //
+                    //     if (options) {
+                    //         VariationOption.destroy({where: {variation_id: variation.id, id: {$notIn: options.filter(e => e.id).map(e => e.id)}}})
+                    //         for (const option of options) {
+                    //             option.variation_id = variation.id
+                    //
+                    //             if (option.id) {
+                    //                 VariationOption.update(option, {where: {id: option.id}})
+                    //             } else {
+                    //                 VariationOption.create(option)
+                    //             }
+                    //         }
+                    //     }
+                    // }
                 }
 
                 Persistence.update(query, req.body, res)

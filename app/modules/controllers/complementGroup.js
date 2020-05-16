@@ -1,8 +1,5 @@
 module.exports = app => {
-    const moment = require('moment-timezone')
-    moment.tz.setDefault('America/Recife')
-
-    const Model = app.datasource.models.complements
+    const Model = app.datasource.models.complement_groups
     const Persistence = require('../../helpers/persistence')(Model)
 
     return {
@@ -52,13 +49,20 @@ module.exports = app => {
                 delete req.body._userId
                 delete req.body.id
 
+                const complements = req.body.complements
+
+                const ComplementGroup = await Model.findOne({where: {id: query.id}});
+
+                if (complements) {
+                    ComplementGroup.setComplements(complements.map(comp => comp.id));
+                }
+
                 Persistence.update(query, req.body, res)
             } catch (err) {
                 console.log(err)
                 res.status(400).json(err)
             }
         },
-
         delete: (req, res) => {
             Persistence.delete(req.params, res)
         },
@@ -68,14 +72,14 @@ module.exports = app => {
 
             req.body.shop_id = req.user.object.id
 
-            if (req.body.complement_group) {
-                req.body.complement_group.shop_id = req.body.shop_id
-            }
+            req.body.complements.forEach(complement => {
+                complement.shop_id = req.body.shop_id
+            })
 
             Persistence.create(req.body, res, {
                 include: [{
-                    model: app.datasource.models.complement_groups,
-                    as: 'complement_group'
+                    model: app.datasource.models.complements,
+                    as: 'complements'
                 }]
             })
         }

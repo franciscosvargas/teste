@@ -1,6 +1,6 @@
 module.exports = app => {
-    const url = `${app.config.url}/complement`
-    const Controller = require('../controllers/complement')(app)
+    const url = `${app.config.url}/complementGroup`
+    const Controller = require('../controllers/complementGroup')(app)
 
     app.route(`${url}/find`)
         .get(app.jwtShop, Controller.find)
