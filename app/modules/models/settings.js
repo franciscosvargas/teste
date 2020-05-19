@@ -16,13 +16,15 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.DATE,
       allowNull: true
     },
-    deleted_at: {
-      type: DataTypes.DATE,
-      allowNull: true
+    type: {
+      type: DataTypes.STRING(300),
+      allowNull: false,
+      unique: 'type_name_unique'
     },
     name: {
       type: DataTypes.STRING(300),
-      allowNull: false
+      allowNull: false,
+      unique: 'type_name_unique'
     },
     value: {
       type: DataTypes.TEXT,

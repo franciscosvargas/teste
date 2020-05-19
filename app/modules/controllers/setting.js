@@ -13,7 +13,12 @@ module.exports = app => {
             }
 
             try {
+                const params = req.params;
                 const filters = JSON.parse(req.query.filter)
+
+                if(params.type) {
+                    filters.type = params.type;
+                }
 
                 if (filters) {
                     query.where.$or = []
@@ -27,33 +32,41 @@ module.exports = app => {
             }
 
             Model.findAll(query)
-                .then(result => res.status(200).json({items: result, totalCount: result.length}))
+                .then(result => {
+                    const settingsObj = result.reduce((settings, item) => {
+                        settings[item.name] = item.value;
+                        return settings;
+                    }, {});
+                    return res.status(200).json(settingsObj);
+                })
                 .catch(err => {
                     console.log(err)
                     res.status(500).json(err)
                 })
         },
         update: async (req, res) => {
-            const query = {id: req.body.id}
             try {
                 delete req.body._isEditMode
                 delete req.body._userId
                 delete req.body.id
 
-                Persistence.update(query, req.body, res)
+                if(req.params && req.params.type) {
+                    const type = req.params.type;
+
+                    await Promise.all(Object.entries(req.body)
+                        .map(([name, value]) => {
+                            return Model.upsert({type, name, value});
+                        })
+                    );
+
+                    res.status(200).json({})
+                } else {
+                    res.status(400).json({})
+                }
             } catch (err) {
                 console.log(err)
                 res.status(400).json(err)
             }
-        },
-        delete: (req, res) => {
-            Persistence.delete(req.params, res)
-        },
-        create: (req, res) => {
-            delete req.body._isEditMode
-            delete req.body._userId
-
-            Persistence.create(req.body, res)
         }
     }
 }
