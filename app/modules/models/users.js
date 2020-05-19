@@ -29,6 +29,10 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(500),
       allowNull: true
     },
+    token: {
+      type: DataTypes.STRING(300),
+      allowNull: true
+    },
     password_recover_token: {
       type: DataTypes.STRING(100),
       allowNull: true

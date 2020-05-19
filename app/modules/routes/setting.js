@@ -3,8 +3,8 @@ module.exports = app => {
     const Controller = require('../controllers/setting')(app)
 
     app.route(`${url}/:type`)
-        .get(Controller.find)
+        .get(app.jwt, Controller.find)
 
     app.route(`${url}/:type`)
-        .put(Controller.update)
+        .put(app.jwt, Controller.update)
 }

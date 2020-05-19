@@ -3,7 +3,6 @@ module.exports = app => {
     moment.tz.setDefault('America/Recife')
 
     const Model = app.datasource.models.settings
-    const Persistence = require('../../helpers/persistence')(Model)
 
     return {
         find: (req, res) => {
