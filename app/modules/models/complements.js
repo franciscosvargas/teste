@@ -1,7 +1,7 @@
 /* jshint indent: 2 */
 
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('complements', {
+  const Complement = sequelize.define('complements', {
     id: {
       type: DataTypes.INTEGER(10).UNSIGNED,
       allowNull: false,
@@ -29,11 +29,17 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       defaultValue: '0.000'
     },
-    product_id: {
-      type: DataTypes.INTEGER(10).UNSIGNED,
-      allowNull: true
+    shop_id: {
+      type: DataTypes.INTEGER(11),
+      allowNull: false
     }
   }, {
     tableName: 'complements'
   });
+
+  Complement.associate = (models) => {
+    Complement.belongsTo(models.complement_groups, {as: 'complement_group'});
+  }
+
+  return Complement;
 };

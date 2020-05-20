@@ -35,7 +35,7 @@
 module.exports = {
     database: 'pede_delivery_app',
     username: 'root',
-    password: 'root123#',
+    password: '678bezao',
     params: {
         host: 'localhost',
         port: 3306,

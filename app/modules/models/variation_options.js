@@ -28,10 +28,6 @@ module.exports = function (sequelize, DataTypes) {
       type: DataTypes.DECIMAL,
       allowNull: false,
       defaultValue: '0.00000000'
-    },
-    variation_id: {
-      type: DataTypes.INTEGER(10).UNSIGNED,
-      allowNull: true
     }
   }, {
     tableName: 'variation_options'

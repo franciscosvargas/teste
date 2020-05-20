@@ -1,7 +1,7 @@
 const callbackObject = require('./returnObject')
 
 module.exports = Model => ({
-    create: (data, res) => Model.create(data)
+    create: (data, res, options) => Model.create(data, options)
         .then(result => callbackObject.returnCreateSuccess(result, res))
         .catch(error => callbackObject.returnError(error, res)),
 

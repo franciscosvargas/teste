@@ -1,14 +1,14 @@
 module.exports = app => {
-    const moment = require('moment-timezone')
-    moment.tz.setDefault('America/Recife')
-
-    const Model = app.datasource.models.complements
+    const Model = app.datasource.models.variation_groups
+    const Variation = app.datasource.models.variations
+    const VariationOption = app.datasource.models.variation_options
     const Persistence = require('../../helpers/persistence')(Model)
 
     return {
         findAll: (req, res) => {
             const query = {
-                where: {shop_id: req.user.object.id}
+                where: {shop_id: req.user.object.id},
+                include: [{model: Variation, as: 'variations', include: [{model: VariationOption, as: 'options'}]}]
             }
 
             Model.findAll(query)
@@ -21,7 +21,8 @@ module.exports = app => {
         find: (req, res) => {
             const query = {
                 where: {shop_id: req.user.object.id},
-                limit: 10
+                limit: 10,
+                include: [{model: Variation, as: 'variations', include: [{model: VariationOption, as: 'options'}]}]
             }
 
             try {
@@ -52,30 +53,45 @@ module.exports = app => {
                 delete req.body._userId
                 delete req.body.id
 
+                const variations = req.body.variations
+
+                const VariationGroup = await Model.findOne({where: {id: query.id}});
+
+                if (variations) {
+                    await VariationGroup.setVariations(variations.map(variation => variation.id));
+                }
+
                 Persistence.update(query, req.body, res)
             } catch (err) {
                 console.log(err)
                 res.status(400).json(err)
             }
         },
-
         delete: (req, res) => {
             Persistence.delete(req.params, res)
         },
         create: (req, res) => {
+            const variations = req.body.variations
+
             delete req.body._isEditMode
             delete req.body._userId
 
             req.body.shop_id = req.user.object.id
 
-            if (req.body.complement_group) {
-                req.body.complement_group.shop_id = req.body.shop_id
+            if (variations) {
+                variations.forEach(variation => {
+                    variation.shop_id = req.body.shop_id
+                })
             }
 
             Persistence.create(req.body, res, {
                 include: [{
-                    model: app.datasource.models.complement_groups,
-                    as: 'complement_group'
+                    model: Variation,
+                    as: 'variations',
+                    include: {
+                        model: VariationOption,
+                        as: 'options'
+                    }
                 }]
             })
         }
