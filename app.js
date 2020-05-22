@@ -40,8 +40,8 @@ const app = express()
 // app.use(bodyParser.json({limit: '1000mb'}))
 // app.use(bodyParser.urlencoded({limit: '1000mb', extended: true}))
 
-app.use(bodyParser.json({verify: rawBodySaver, limit: '1000mb'}))
-app.use(bodyParser.urlencoded({verify: rawBodySaver, extended: true, limit: '1000mb'}))
+app.use(bodyParser.json({ verify: rawBodySaver, limit: '1000mb' }))
+app.use(bodyParser.urlencoded({ verify: rawBodySaver, extended: true, limit: '1000mb' }))
 app.use(bodyParser.raw({
     limit: '1000mb',
     verify: rawBodySaver, type: function (req) {
@@ -66,7 +66,7 @@ app.jwtShop = require('./app/helpers/jwt')(app).validateShop
 
 const port = process.env.PORT || 3000
 
-const server = https.createServer({key: privateKey, cert: certificate}, app)
+const server = https.createServer({ key: privateKey, cert: certificate }, app)
 // const server = http.createServer(app)
 
 const eventEmitter = new EventEmitter()
@@ -76,7 +76,7 @@ require('./routes')(app, eventEmitter)
 // require('./app/socket/server')(app, eventEmitter)
 // require('./app/socket/send-socket')(eventEmitter)
 
-app.route('/date').get((req, res) => res.json({date: require('./app/helpers/dateFormat').utc(new Date())}))
+app.route('/date').get((req, res) => res.json({ date: require('./app/helpers/dateFormat').utc(new Date()) }))
 
 app.route('/medias/:sender_id/:file').get((req, res) => {
     var dir = '/root/WebWhatsapp-Wrapper'
@@ -139,7 +139,7 @@ app.route('/avatar/:sender_id').get((req, res) => {
     })
 })
 
-app.use((req, res) => res.status(404).json({error: 'Route not found'}))
+app.use((req, res) => res.status(404).json({ error: 'Route not found' }))
 
 server.listen(port)
 
