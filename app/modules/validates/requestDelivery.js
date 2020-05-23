@@ -232,8 +232,8 @@ module.exports = app => {
                 : next(),
         
         locationCalculateUser: (req, res, next) => {
-            req.assert('originAddress', Errors.originAddress).notEmpty()
-            req.assert('destinationAddress', Errors.destinationAddress).notEmpty()
+            req.assert('origin_address', Errors.origin_address).notEmpty()
+            req.assert('destination_address', Errors.destination_address).notEmpty()
             req.body.time = req.body.time ? req.body.time : 0.0
             const error = req.validationErrors()
             if (error) {

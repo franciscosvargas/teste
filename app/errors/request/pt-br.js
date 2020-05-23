@@ -70,12 +70,12 @@ const client_company_id = {
     message: 'Cliente Empresa é requerido!'
 }
 
-const originAddress = {
+const origin_address = {
     title: 'Endereço origem',
     message: 'Endereço de origem é requerido!'
 }
 
-const destinationAddress = {
+const destination_address = {
     title: 'Endereço destino',
     message: 'Endereço de destino é requerido!'
 }
@@ -106,6 +106,6 @@ module.exports = {
     companyNotExist: companyNotExist,
     serviceId: serviceId,
     details: details,
-    originAddress,
-    destinationAddress
+    origin_address,
+    destination_address
 }

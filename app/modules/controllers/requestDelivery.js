@@ -54,8 +54,8 @@ module.exports = app => {
                 const deliveryTax = SettingsHelper.toSettingsObject(deliverySettings);
 
                 const result = await Help.calculatePointAddress({
-                    originAddress: req.body.originAddress,
-                    destinationAddress: req.body.destinationAddress,
+                    origin_address: req.body.origin_address,
+                    destination_address: req.body.destination_address,
                     ...deliveryTax
                 })
                 // const business = await Business.create(calculate, req.body)

@@ -7,7 +7,7 @@ let googleMapsClient = maps.createClient({
     key: googleKey
 })
 
-const calculateSurplus = object => (object.distanceInMeters / 1000) - parseFloat(object.range_min)
+const calculateSurplus = object => (object.distance_in_meters / 1000) - parseFloat(object.range_min)
 
 const calculateValueTotal = (object, surplus) => (surplus > 0) ? (parseFloat(object.tax_per_km) * surplus) + parseFloat(object.tax_min) : parseFloat(object.tax_min)
 
@@ -116,8 +116,8 @@ const calculatePointAddressMulti = object => {
 }
 const calculatePointAddress = object => {
     const query = {
-        origins: [`${object.originAddress}`],
-        destinations: [`${object.destinationAddress}`],
+        origins: [`${object.origin_address}`],
+        destinations: [`${object.destination_address}`],
         mode: 'driving'
     }
     return new Promise((resolve, reject) => {
@@ -129,21 +129,21 @@ const calculatePointAddress = object => {
 
             if(pathResult.found) {
                 let distanceMatrixResult = result.json.rows[0].elements[0];
-                pathResult.originAddresses = object.originAddress;
-                pathResult.destinationAddresses = object.destinationAddress;
+                pathResult.origin_addresses = object.origin_address;
+                pathResult.destination_addresses = object.destination_address;
                 pathResult.found = distanceMatrixResult.status === 'OK';
 
                 if(pathResult.found) {
-                    pathResult.durationText = distanceMatrixResult.duration.text;
-                    pathResult.durationInSeconds = distanceMatrixResult.duration.value;
-                    pathResult.distanceKmText = distanceMatrixResult.distance.text;
-                    pathResult.distanceInMeters = distanceMatrixResult.distance.value;
-                    pathResult.valueTotal = calculateRateSurplus({...pathResult, ...object})
+                    pathResult.duration_text = distanceMatrixResult.duration.text;
+                    pathResult.duration_in_seconds = distanceMatrixResult.duration.value;
+                    pathResult.distance_km_text = distanceMatrixResult.distance.text;
+                    pathResult.distance_in_meters = distanceMatrixResult.distance.value;
+                    pathResult.value_total = calculateRateSurplus({...pathResult, ...object})
                 }
             }
 
             if (!pathResult.found) {
-                pathResult.valueTotal = parseFloat(object.tax_address_not_found);
+                pathResult.value_total = parseFloat(object.tax_address_not_found);
             }
 
             console.log(JSON.stringify(pathResult, null, 4))
