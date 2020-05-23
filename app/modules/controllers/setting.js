@@ -3,6 +3,7 @@ module.exports = app => {
     moment.tz.setDefault('America/Recife')
 
     const Model = app.datasource.models.settings
+    const SettingsHelper = require('../../helpers/settings')
 
     return {
         find: (req, res) => {
@@ -32,10 +33,7 @@ module.exports = app => {
 
             Model.findAll(query)
                 .then(result => {
-                    const settingsObj = result.reduce((settings, item) => {
-                        settings[item.name] = item.value;
-                        return settings;
-                    }, {});
+                    const settingsObj = SettingsHelper.toSettingsObject(result);
                     return res.status(200).json(settingsObj);
                 })
                 .catch(err => {

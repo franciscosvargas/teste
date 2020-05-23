@@ -1,9 +1,10 @@
 module.exports = app => {
     const RequestDelivery = app.datasource.models.RequestDelivery
-    const RunningDelivery = app.datasource.models.RunningDelivery
+    const Settings = app.datasource.models.settings
     const Persistence = require('../../helpers/persistence')(RequestDelivery)
     const Help = require('../../helpers/googleMaps')
     const HelpPagarme = require('../../helpers/tratmentPagarme')
+    const SettingsHelper = require('../../helpers/settings')
     const Company = require('../business/company')(app)
     const Taxi = require('../business/taxi')(app)
     const Business = require('../business/requestDelivery')(app)
@@ -44,16 +45,25 @@ module.exports = app => {
         locationCalculateUser: async (req, res) => {
             try {
                 
-                const returnCityGoogle = await Help.returnCityStateCountry({lat: req.body.clientLat, lng: req.body.clientLng})
-                req.body.addressClient = returnCityGoogle.address
-                const taxi = await Taxi.validateRates(req.body)
-                const object = await Company.tratmentQuery(taxi)
-                const calculate = await Help.calculatePointAddress(object)
-                const business = await Business.create(calculate, req.body)
-                Persistence.create(business, res)
+                // const returnCityGoogle = await Help.returnCityStateCountry({lat: req.body.clientLat, lng: req.body.clientLng})
+                // req.body.addressClient = returnCityGoogle.address
+                // const taxi = await Taxi.validateRates(req.body)
+                // const object = await Company.tratmentQuery(taxi)
+
+                const deliverySettings = await Settings.findAll({where: {type: 'delivery-tax'}});
+                const deliveryTax = SettingsHelper.toSettingsObject(deliverySettings);
+
+                const result = await Help.calculatePointAddress({
+                    originAddress: req.body.originAddress,
+                    destinationAddress: req.body.destinationAddress,
+                    ...deliveryTax
+                })
+                // const business = await Business.create(calculate, req.body)
+                // Persistence.create(business, res)
+                res.status(200).json(result)
             } catch (err) {
                 console.log(err)
-                res.status(400).jsno(err)
+                res.status(400).json(err)
             }
         },
 

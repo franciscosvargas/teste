@@ -17,7 +17,7 @@ const loadModels = (sequelize) => {
     Object.keys(models).forEach(function (object) {
         if ('associate' in models[object]) {
             models[object].associate(models)
-        };
+        }
     })
 
     return models

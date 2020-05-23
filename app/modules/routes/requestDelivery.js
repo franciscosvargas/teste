@@ -33,7 +33,9 @@ module.exports = app => {
         .post(app.jwt, Validate.locationCalculate, Controller.companyLocation)
 
     app.route(`${url}/user/location`)
-        .post(app.jwt, Validate.locationCalculateUser, Controller.locationCalculateUser)
+        .get(app.jwt,
+            Validate.locationCalculateUser,
+            Controller.locationCalculateUser)
 
     app.route(`${url}/refund/:id`)
         .put(Validate.refund, Controller.refundRequest)

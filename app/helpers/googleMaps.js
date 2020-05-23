@@ -7,9 +7,9 @@ let googleMapsClient = maps.createClient({
     key: googleKey
 })
 
-const calculateSurplus = object => (object.meters - object.franchiseMeters) / 1000
+const calculateSurplus = object => (object.distanceInMeters / 1000) - parseFloat(object.range_min)
 
-const calculateValueTotal = (object, surplus) => (surplus > 0) ? (parseFloat(object.baseValue) + surplus) + parseFloat(object.fixedValue) : object.fixedValue
+const calculateValueTotal = (object, surplus) => (surplus > 0) ? (parseFloat(object.tax_per_km) * surplus) + parseFloat(object.tax_min) : parseFloat(object.tax_min)
 
 const compared = (totalKm, franchiseMeters) => (totalKm - franchiseMeters) > 0
 
@@ -81,31 +81,7 @@ const returnCityStateCountry = object => {
 
 const calculateRateSurplus = object => {
     try {
-        if (compared(object.meters, object.franchiseMeters)) {
-            object.requestReturnValue = parseFloat(object.requestReturnValue) === 0.0 ? 1 : parseFloat(object.requestReturnValue)
-            object.estimateAwaitValue = parseFloat(object.estimateAwaitValue) === 0.0 ? 1 : parseFloat(object.estimateAwaitValue)
-            object.valueTotal = calculateValueTotal(object, calculateSurplus(object))
-            console.log('Valor do km', object.valueTotal)
-            object.valueTotal = requestReturn(object)
-            console.log('valor por retorno', requestReturn(object))
-            object.valueTotal = estimateAwait(object)
-            console.log('valor espera', estimateAwait(object))
-            console.log('valueTotal', object.valueTotal)
-            object.valueTotal = object.valueTotal.toFixed(2)
-            return object
-        } else {
-            if (object.requestReturn || object.estimateAwait) {
-                object.valueTotal = object.baseValue || object.valueTotal
-                object.requestReturnValue = parseFloat(object.requestReturnValue) === 0.0 ? 1 : parseFloat(object.requestReturnValue)
-                object.estimateAwaitValue = parseFloat(object.estimateAwaitValue) === 0.0 ? 1 : parseFloat(object.estimateAwaitValue)
-                object.valueTotal = requestReturn(object)
-                object.valueTotal = estimateAwait(object)
-                return object
-            } else {
-                object.valueTotal = object.valueTotal || object.baseValue
-                return object
-            }
-        }
+        return calculateValueTotal(object, calculateSurplus(object))
     } catch (err) {
         console.log(err)
     }
@@ -140,25 +116,38 @@ const calculatePointAddressMulti = object => {
 }
 const calculatePointAddress = object => {
     const query = {
-        origins: `${object.pointInit[0]}, ${object.pointInit[1]}`,
-        destinations: `${object.pointFinish[0]}, ${object.pointFinish[1]}`,
+        origins: [`${object.originAddress}`],
+        destinations: [`${object.destinationAddress}`],
         mode: 'driving'
     }
     return new Promise((resolve, reject) => {
         googleMapsClient.distanceMatrix(query, (err, result) => {
             if (err) reject(err)
-            object.duration = result.json.rows[0].elements[0].duration.text
-            console.log('Duração', object.duration)
-            object.durationTime = result.json.rows[0].elements[0].duration.value
-            console.log('Duração em segundos', object.durationTime)
-            object.kilometers = result.json.rows[0].elements[0].distance.text
-            console.log('Kilometros', object.kilometers)
-            object.meters = result.json.rows[0].elements[0].distance.value
-            console.log('meters', object.meters)
-            object = calculateRateSurplus(object)
-            object.originAddresses = result.json.origin_addresses
-            object.destinationAddresses = result.json.destination_addresses
-            resolve(object)
+
+            const pathResult = {};
+            pathResult.found = result.json.status === 'OK';
+
+            if(pathResult.found) {
+                let distanceMatrixResult = result.json.rows[0].elements[0];
+                pathResult.originAddresses = object.originAddress;
+                pathResult.destinationAddresses = object.destinationAddress;
+                pathResult.found = distanceMatrixResult.status === 'OK';
+
+                if(pathResult.found) {
+                    pathResult.durationText = distanceMatrixResult.duration.text;
+                    pathResult.durationInSeconds = distanceMatrixResult.duration.value;
+                    pathResult.distanceKmText = distanceMatrixResult.distance.text;
+                    pathResult.distanceInMeters = distanceMatrixResult.distance.value;
+                    pathResult.valueTotal = calculateRateSurplus({...pathResult, ...object})
+                }
+            }
+
+            if (!pathResult.found) {
+                pathResult.valueTotal = parseFloat(object.tax_address_not_found);
+            }
+
+            console.log(JSON.stringify(pathResult, null, 4))
+            resolve(pathResult)
         })
     })
 }
