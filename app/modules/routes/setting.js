@@ -1,14 +1,10 @@
 module.exports = app => {
-    const url = `${app.config.url}/setting`
+    const url = `${app.config.url}/settings`
     const Controller = require('../controllers/setting')(app)
 
-    app.route(`${url}/find`)
-        .get(Controller.find)
+    app.route(`${url}/:type`)
+        .get(app.jwt, Controller.find)
 
-    app.route(`${url}`)
-        .post(Controller.create)
-        .put(Controller.update)
-
-    app.route(`${url}/:id`)
-        .delete(Controller.delete)
+    app.route(`${url}/:type`)
+        .put(app.jwt, Controller.update)
 }

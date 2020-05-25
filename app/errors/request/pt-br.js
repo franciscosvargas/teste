@@ -70,6 +70,16 @@ const client_company_id = {
     message: 'Cliente Empresa é requerido!'
 }
 
+const origin_address = {
+    title: 'Endereço origem',
+    message: 'Endereço de origem é requerido!'
+}
+
+const destination_address = {
+    title: 'Endereço destino',
+    message: 'Endereço de destino é requerido!'
+}
+
 const requestNotExist = {
     title: 'Pedido ',
     message: 'Pedido não existe!'
@@ -95,5 +105,7 @@ module.exports = {
     ratesNotExist: ratesNotExist,
     companyNotExist: companyNotExist,
     serviceId: serviceId,
-    details: details
+    details: details,
+    origin_address,
+    destination_address
 }

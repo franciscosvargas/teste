@@ -232,28 +232,14 @@ module.exports = app => {
                 : next(),
         
         locationCalculateUser: (req, res, next) => {
-            req.assert('clientLat', Errors.clientLat).notEmpty()
-            req.assert('clientLng', Errors.clientLng).notEmpty()
-            req.assert('destinationLng', Errors.clientLat).notEmpty()
-            req.assert('destinationLat', Errors.clientLng).notEmpty()
-            req.assert('service_id', Errors.serviceId).notEmpty()
-            req.assert('requestReturn', Errors.requestReturn).optional().notEmpty()
-            req.assert('estimateAwait', Errors.estimateAwait).optional().notEmpty()
-            req.assert('details', Errors.details).optional()
-            req.assert('totalOrder', Errors.totalOrder).notEmpty()
-            req.assert('valueReceive', Errors.valueReceive).notEmpty()
-            req.assert('change', Errors.change).notEmpty()
-            req.assert('typePayment', Errors.typePayment).notEmpty()
-            req.assert('payment_type_flag_id', Errors.change).optional()
-            req.assert('time', Errors.time).optional().isInt()
+            req.assert('origin_address', Errors.origin_address).notEmpty()
+            req.assert('destination_address', Errors.destination_address).notEmpty()
             req.body.time = req.body.time ? req.body.time : 0.0
             const error = req.validationErrors()
             if (error) {
                 res.status(400).json(error)
             } else {
-                Help.pointAddressLocation(req.body)
-                    .then(response => response ? next() : res.status(400).json([Errors.calculateRoute]))
-                    .catch(err => res.status(400).json(err))
+                next();
             }
         },
         locationCalculate: (req, res, next) => {
