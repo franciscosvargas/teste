@@ -3,7 +3,7 @@ const express = require('express')
 const EventEmitter = require('events').EventEmitter
 const bodyParser = require('body-parser')
 const cors = require('cors')
-// const http = require('http')
+const http = require('http')
 const path = require('path')
 
 const morgan = require('morgan')
@@ -12,10 +12,10 @@ const validator = require('express-validator')
 const validateFormat = require('./app/errors/validate')
 const pdf = require('express-pdf')
 
-const https = require('https')
+// const https = require('https')
 const fs = require('fs')
-const privateKey = fs.readFileSync('/etc/letsencrypt/live/pedeae.delivery/privkey.pem', 'utf8')
-const certificate = fs.readFileSync('/etc/letsencrypt/live/pedeae.delivery/fullchain.pem', 'utf8')
+// const privateKey = fs.readFileSync('/etc/letsencrypt/live/pedeae.delivery/privkey.pem', 'utf8')
+// const certificate = fs.readFileSync('/etc/letsencrypt/live/pedeae.delivery/fullchain.pem', 'utf8')
 
 // const log = require('./app/helpers/logApi').log
 
@@ -66,8 +66,8 @@ app.jwtShop = require('./app/helpers/jwt')(app).validateShop
 
 const port = process.env.PORT || 3000
 
-const server = https.createServer({ key: privateKey, cert: certificate }, app)
-// const server = http.createServer(app)
+// const server = https.createServer({ key: privateKey, cert: certificate }, app)
+const server = http.createServer(app)
 
 const eventEmitter = new EventEmitter()
 
