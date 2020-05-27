@@ -73,5 +73,13 @@ module.exports = Model => ({
             .then(HelperPaginate.listAll(query))
             .then(result => callbackObject.returnListSuccess(result, res))
             .catch(err => callbackObject.returnError(err, res))
+    },
+
+    upsert: async (obj) => {
+        const [model, wasCreated] = await Model.findOrCreate({where: {id: obj.id}, defaults: obj});
+        if(!wasCreated) {
+            await model.update(obj);
+        }
+        return model;
     }
 })
