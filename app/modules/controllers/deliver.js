@@ -3,6 +3,7 @@ module.exports = app => {
     moment.tz.setDefault('America/Recife')
 
     const Model = app.datasource.models.delivers
+    const LastLocation = app.datasource.models.last_locations;
     const Persistence = require('../../helpers/persistence')(Model)
 
     // const Device = app.datasource.models.Devices
@@ -30,6 +31,10 @@ module.exports = app => {
                     //         $like: `%${req.body.name.toUpperCase()}%`
                     //     }
                 },
+                include: {
+                    model: LastLocation,
+                    as: "last_location"
+                },
                 limit: 10
             }
 
@@ -54,13 +59,21 @@ module.exports = app => {
                 })
         },
         update: async (req, res) => {
-            const query = {id: req.body.id}
             try {
                 delete req.body._isEditMode
                 delete req.body._userId
                 delete req.body.id
 
-                Persistence.update(query, req.body, res)
+                let deliverId = req.body.deliver_id;
+                const Deliver = await Model.findByPk(deliverId);
+
+                const lastLocation = req.body.last_location;
+                if(lastLocation) {
+                    Deliver.setLastLocation(lastLocation);
+                }
+
+                await Deliver.update(req.body);
+                res.status(200).json({});
             } catch (err) {
                 console.log(err)
                 res.status(400).json(err)
@@ -73,7 +86,12 @@ module.exports = app => {
             delete req.body._isEditMode
             delete req.body._userId
 
-            Persistence.create(req.body, res)
+            Persistence.create(req.body, res, {
+                include: {
+                    model: LastLocation,
+                    as: "last_location"
+                }
+            })
         }
 
         // create: (req, res) => {

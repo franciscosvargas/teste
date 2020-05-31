@@ -1,7 +1,7 @@
 /* jshint indent: 2 */
 
 module.exports = function (sequelize, DataTypes) {
-    return sequelize.define('delivers', {
+    const Delivers = sequelize.define('delivers', {
         id: {
             type: DataTypes.INTEGER(10).UNSIGNED,
             allowNull: false,
@@ -82,5 +82,11 @@ module.exports = function (sequelize, DataTypes) {
         }
     }, {
         tableName: 'delivers'
-    })
+    });
+
+    Delivers.associate = (models) => {
+        Delivers.hasOne(models.last_locations);
+    }
+
+    return Delivers;
 }
