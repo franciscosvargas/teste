@@ -5,15 +5,15 @@ module.exports = app => {
 
     app.route(url)
         .get(app.jwt, Controller.listAll)
-        .post(app.jwt, Validate.create, Controller.create)
+        .post(app.jwt, Controller.create)
+        .put(app.jwt, Controller.update)
 
     app.route(`${url}/validate/:code`)
         .post(app.jwt, Validate.isCode)
 
-    app.route(`${url}/:id/block`)
-        .put(app.jwt, Validate.listOne, Controller.block)
+    app.route(`${url}/:id/disable`)
+        .put(app.jwt, Controller.disable)
 
     app.route(`${url}/:id`)
-        .get(app.jwt, Validate.listOne, Controller.listOne)
-        .put(app.jwt, Validate.update, Controller.update)
+        .get(app.jwt, Controller.listOne)
 }
