@@ -74,6 +74,8 @@ module.exports = app => {
                     model: OpeningHour
                 }
             })
-        }
+        },
+        online: (req, res) => Persistence.update({id: req.params.id}, {online: true}, res),
+        offline: (req, res) => Persistence.update({id: req.params.id}, {online: false}, res)
     }
 }

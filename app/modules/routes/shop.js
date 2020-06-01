@@ -11,4 +11,10 @@ module.exports = app => {
 
     app.route(`${url}/:id`)
         .delete(Controller.delete)
+
+    app.route(`${url}/:id/online`)
+        .put(app.jwt, Controller.online)
+
+    app.route(`${url}/:id/offline`)
+        .put(app.jwt, Controller.offline)
 }
