@@ -15,6 +15,11 @@ module.exports = function (sequelize, DataTypes) {
         longitude: {
             type: DataTypes.TEXT,
             allowNull: false
+        },
+        deliver_id: {
+            type: DataTypes.INTEGER(10).UNSIGNED,
+            allowNull: false,
+            unique: true
         }
     }, {
         tableName: 'last_locations'

@@ -62,18 +62,22 @@ module.exports = app => {
             try {
                 delete req.body._isEditMode
                 delete req.body._userId
-                delete req.body.id
 
-                let deliverId = req.body.deliver_id;
+                let deliverId = req.body.id;
                 const Deliver = await Model.findByPk(deliverId);
 
-                const lastLocation = req.body.last_location;
-                if(lastLocation) {
-                    Deliver.setLastLocation(lastLocation);
-                }
+                if(!Deliver) {
+                    res.status(404).json();
+                } else {
 
-                await Deliver.update(req.body);
-                res.status(200).json({});
+                    const lastLocation = req.body.last_location;
+                    if (lastLocation) {
+                        lastLocation.deliver_id = deliverId;
+                        LastLocation.upsert(lastLocation, {where: {deliver_id: deliverId}});
+                    }
+
+                    await Persistence.update({id: deliverId}, req.body, res);
+                }
             } catch (err) {
                 console.log(err)
                 res.status(400).json(err)
