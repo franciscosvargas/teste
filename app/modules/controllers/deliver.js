@@ -73,7 +73,7 @@ module.exports = app => {
                     const lastLocation = req.body.last_location;
                     if (lastLocation) {
                         lastLocation.deliver_id = deliverId;
-                        LastLocation.upsert(lastLocation, {where: {deliver_id: deliverId}});
+                        await LastLocation.upsert(lastLocation, {where: {deliver_id: deliverId}});
                     }
 
                     await Persistence.update({id: deliverId}, req.body, res);

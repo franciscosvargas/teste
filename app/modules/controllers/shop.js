@@ -3,6 +3,7 @@ module.exports = app => {
     moment.tz.setDefault('America/Recife')
 
     const Model = app.datasource.models.shops
+    const OpeningHour = app.datasource.models.opening_hours
     const Persistence = require('../../helpers/persistence')(Model)
 
     return {
@@ -13,6 +14,9 @@ module.exports = app => {
                     //     name: {
                     //         $like: `%${req.body.name.toUpperCase()}%`
                     //     }
+                },
+                include: {
+                    model: OpeningHour
                 },
                 limit: 10,
                 offset: req.query.pageNumber * 10
@@ -43,7 +47,14 @@ module.exports = app => {
             try {
                 delete req.body._isEditMode
                 delete req.body._userId
-                delete req.body.id
+
+                const shopId = req.body.id;
+                const openingHours = req.body.opening_hour;
+
+                if(openingHours) {
+                    openingHours.shop_id = shopId;
+                    await OpeningHour.upsert(openingHours, {where: {shop_id: shopId}})
+                }
 
                 Persistence.update(query, req.body, res)
             } catch (err) {
@@ -58,7 +69,11 @@ module.exports = app => {
             delete req.body._isEditMode
             delete req.body._userId
 
-            Persistence.create(req.body, res)
+            Persistence.create(req.body, res, {
+                include: {
+                    model: OpeningHour
+                }
+            })
         }
     }
 }
