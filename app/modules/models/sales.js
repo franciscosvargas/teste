@@ -1,7 +1,7 @@
 /* jshint indent: 2 */
 
 module.exports = function (sequelize, DataTypes) {
-    return sequelize.define('sales', {
+    let Sale = sequelize.define('sales', {
         id: {
             type: DataTypes.INTEGER(10).UNSIGNED,
             allowNull: false,
@@ -98,5 +98,11 @@ module.exports = function (sequelize, DataTypes) {
         }
     }, {
         tableName: 'sales'
-    })
+    });
+
+    Sale.associate = (models) => {
+        Sale.belongsTo(models.delivers);
+    }
+
+    return Sale;
 }
