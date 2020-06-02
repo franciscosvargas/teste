@@ -13,8 +13,8 @@ module.exports = app => {
         .delete(Controller.delete)
 
     app.route(`${url}/:id/online`)
-        .put(app.jwt, Controller.online)
+        .put(app.jwtShop, Controller.online)
 
     app.route(`${url}/:id/offline`)
-        .put(app.jwt, Controller.offline)
+        .put(app.jwtShop, Controller.offline)
 }
