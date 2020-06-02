@@ -17,11 +17,11 @@ module.exports = Model => ({
         .then(result => callbackObject.returnListSuccess(result, res))
         .catch(error => callbackObject.returnError(error, res)),
 
-    listAllQuery: (query, res) => Model.findAll(query)
+    listAllQuery: (query, res, options) => Model.findAll(Object.assign({}, query, options))
         .then(result => callbackObject.returnListSuccess(result, res))
         .catch(error => callbackObject.returnError(error, res)),
 
-    listOne: (query, res) => Model.findOne({ where: query })
+    listOne: (query, res, options) => Model.findOne(Object.assign({}, { where: query }, options))
         .then(result => callbackObject.returnListSuccess(result, res))
         .catch(error => callbackObject.returnError(error, res)),
 

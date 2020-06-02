@@ -46,7 +46,8 @@ module.exports = function(sequelize, DataTypes) {
   });
 
   City.associate = (models) => {
-    City.hasOne(models.promocodes);
+    City.hasMany(models.promocodes);
+    City.hasMany(models.cashback_rules);
   }
 
   return City;
