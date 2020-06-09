@@ -85,6 +85,14 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.BOOLEAN,
       allowNull: true,
     },
+    free_delivery: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+    },
+    fixed_price: {
+      type: DataTypes.DECIMAL,
+      allowNull: true,
+    },
     budget_responsibility: {
       type: DataTypes.STRING(255),
       allowNull: true,
