@@ -123,6 +123,7 @@ module.exports = function(sequelize, DataTypes) {
 
   Promocode.associate = (models) => {
     Promocode.belongsTo(models.cities);
+    Promocode.hasMany(models.sales);
   }
 
   return Promocode;

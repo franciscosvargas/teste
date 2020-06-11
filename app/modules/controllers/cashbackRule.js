@@ -37,6 +37,10 @@ module.exports = app => {
 
             const CashbackRule = await Model.findByPk(req.body.id)
 
+            if(!CashbackRule) {
+                res.status(404).send();
+            }
+
             if (categories) {
                 await CashbackRule.setCategories(categories);
             }

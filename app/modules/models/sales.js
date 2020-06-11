@@ -88,6 +88,10 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.DECIMAL,
             allowNull: true
         },
+        cashback_value: {
+            type: DataTypes.DECIMAL,
+            allowNull: true
+        },
         delivery_date: {
             type: DataTypes.DATE,
             allowNull: true
@@ -102,6 +106,8 @@ module.exports = function (sequelize, DataTypes) {
 
     Sale.associate = (models) => {
         Sale.belongsTo(models.delivers);
+        Sale.belongsTo(models.promocodes);
+        Sale.belongsTo(models.cashback_rules);
     }
 
     return Sale;

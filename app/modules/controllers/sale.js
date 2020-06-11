@@ -2,8 +2,9 @@ module.exports = app => {
     const moment = require('moment-timezone')
     moment.tz.setDefault('America/Recife')
 
-    const Model = app.datasource.models.sales
+    const Model = app.datasource.models.sales;
     const Persistence = require('../../helpers/persistence')(Model)
+    const Business = require("../business/sales")(app);
 
     return {
         find: (req, res) => {
@@ -28,7 +29,8 @@ module.exports = app => {
                         query.where.$or.push(tmp)
                     }
                 }
-            } catch (e) {}
+            } catch (e) {
+            }
 
             Model.findAll(query)
                 .then(result => res.status(200).json({items: result, totalCount: result.length}))
@@ -59,7 +61,8 @@ module.exports = app => {
                         query.where.$or.push(tmp)
                     }
                 }
-            } catch (e) {}
+            } catch (e) {
+            }
 
             Model.findAll(query)
                 .then(result => res.status(200).json({items: result, totalCount: result.length}))
@@ -69,13 +72,24 @@ module.exports = app => {
                 })
         },
         update: async (req, res) => {
-            const query = {id: req.body.id}
             try {
                 delete req.body._isEditMode
                 delete req.body._userId
-                delete req.body.id
 
-                Persistence.update(query, req.body, res)
+                const sale = req.body;
+                const code = req.body.promocode;
+
+                const promocode = (code ? await Business.findPromocode(code, sale) : null);
+                sale.promocode_id = promocode ? promocode.id : null;
+
+                const cashbackRule = await Business.findCashbackRuleForSale(sale);
+                sale.cashback_rule_id = cashbackRule ? cashbackRule.id : null;
+                sale.cashback_value = cashbackRule ? cashbackRule.percentage/100 * sale.total : null;
+
+                await Model.update(sale, {where: {id: sale.id}});
+
+                res.status(200).send(sale)
+
             } catch (err) {
                 console.log(err)
                 res.status(400).json(err)
@@ -84,11 +98,24 @@ module.exports = app => {
         delete: (req, res) => {
             Persistence.delete(req.params, res)
         },
-        create: (req, res) => {
+        create: async (req, res) => {
             delete req.body._isEditMode
             delete req.body._userId
 
-            Persistence.create(req.body, res)
+            const sale = req.body;
+            const code = req.body.promocode;
+
+            const promocode = (code ? await Business.findPromocode(code, sale) : null);
+            sale.promocode_id = promocode ? promocode.id : null;
+
+
+            const cashbackRule = await Business.findCashbackRuleForSale(sale);
+            if (cashbackRule) {
+                sale.cashback_rule_id = cashbackRule ? cashbackRule.id : null;
+                sale.cashback_value = cashbackRule ? cashbackRule.percentage/100 * sale.total: null;
+            }
+
+            res.status(201).json(await Model.create(sale));
         }
     }
 }

@@ -29,6 +29,7 @@ module.exports = function(sequelize, DataTypes) {
   });
 
   CashbackRule.associate = (models) => {
+    CashbackRule.hasMany(models.sales);
     CashbackRule.belongsToMany(models.shops, {through: "re_cashback_rule_shop"});
     CashbackRule.belongsToMany(models.categories, {through: "re_cashback_rule_category"});
     CashbackRule.belongsTo(models.cities);
