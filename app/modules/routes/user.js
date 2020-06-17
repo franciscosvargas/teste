@@ -3,8 +3,6 @@ module.exports = app => {
     const Controller = require('../controllers/user')(app)
     const Validate = require('../validates/user')(app)
 
-    const Help = require('../../helpers/upload')
-
     app.route(`${url}/dashboard/general`)
         .get(Controller.dashboard)
 
@@ -20,7 +18,7 @@ module.exports = app => {
     app.route(`${url}/:id`)
         .get(app.jwt, Validate.listOne, Controller.listOne)
         // .put(Help.uploadImage.single('avatar'), Validate.update, Controller.update)
-        .put(Controller.update)
+        .put(app.jwt, Controller.update)
         .delete(app.jwt, Validate.delete, Controller.delete)
 
     app.route(url)

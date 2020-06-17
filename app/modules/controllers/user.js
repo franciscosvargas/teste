@@ -1,7 +1,7 @@
 module.exports = app => {
     const moment = require('moment-timezone')
     moment.tz.setDefault('America/Recife')
-    const User = app.datasource.models.usuarios
+    const User = app.datasource.models.users
     const Device = app.datasource.models.Devices
     const Driver = app.datasource.models.Driver
     const LastLocation = app.datasource.models.LastLocation
@@ -24,7 +24,10 @@ module.exports = app => {
 
     return {
         create: (req, res) => {
-            Bussiness.create(req)
+            const user = req.body;
+            user.password = crypto.md5(user.password);
+
+            User.create(user)
                 .then(object => res.status(200).json(object))
                 .catch(err => res.status(500).json(err))
         },
@@ -130,14 +133,6 @@ module.exports = app => {
             Persistence.listAllPaginated({
                 where: query,
                 order: [['id', 'DESC']],
-                include: [
-                    {
-                        model: Driver,
-                        where: driverQuery,
-                        required: true
-                    },
-                    {model: Company}, {model: Bank}, {model: Card}, {model: Documents}, {model: Vehicles}
-                ],
                 // include: {all: true}
             }, res)(req.query.page === 0 || req.query.page === 'undefined' ? 1 : req.query.page)
         },
