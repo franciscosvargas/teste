@@ -16,8 +16,9 @@ module.exports = app => {
 
     return {
         authenticate: async (req, res) => {
+            let password = crypto.md5(String(req.body.password));
             const user = await Usuarios.findOne({
-                where: {login: req.body.login.toLowerCase(), password: req.body.password},
+                where: {login: req.body.login.toLowerCase(), password},
                 include: {all: true}
             })
             if (user) {
@@ -32,8 +33,9 @@ module.exports = app => {
             }
         },
         authenticateShop: async (req, res) => {
+            let password = crypto.md5(String(req.body.password));
             const user = await Shops.findOne({
-                where: {login: req.body.login.toLowerCase(), password: req.body.password},
+                where: {login: req.body.login.toLowerCase(), password},
                 include: {all: true}
             })
             if (user) {
@@ -48,9 +50,11 @@ module.exports = app => {
             }
         },
         logout: async (req, res) => {
-            const driverLogout = await Business.driverLogout(req.user.object.Drivers[0].dataValues)
-            const userLogout = await Business.userLogout(req.user.object)(driverLogout)
-            await Business.mongodbStatus(req.user.object.Drivers[0].dataValues)(userLogout)
+            await Business.userLogout(req.user)
+            res.status(200).json([{title: 'Sair', message: 'Saindo do sistema!'}])
+        },
+        logoutShop: async (req, res) => {
+            await Business.shopLogout(req.user)
             res.status(200).json([{title: 'Sair', message: 'Saindo do sistema!'}])
         }
     }

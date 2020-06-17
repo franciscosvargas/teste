@@ -25,16 +25,19 @@ module.exports = app => {
     return {
         create: (req, res) => {
             const user = req.body;
-            user.password = crypto.md5(user.password);
+            user.password = crypto.md5(String(user.password));
 
             User.create(user)
-                .then(object => res.status(200).json(object))
+                .then(object => {
+                    delete object.dataValues.password;
+                    res.status(200).json(object)
+                })
                 .catch(err => res.status(500).json(err))
         },
         createClient: async (req, res) => {
             const object = Bussiness.client(req)
             object.type_user_id = 1
-            object.password = crypto.md5(req.body.password)
+            object.password = crypto.md5(String(req.body.password))
             object.cpf = req.body.cpf
             // Persistence.create(object, res)
 
@@ -92,7 +95,7 @@ module.exports = app => {
                 //     req.body.avatar = s3.Location
                 //     req.body.keyUpload = s3.Key
                 // }
-                if (req.body.senha) req.body.senha = crypto.md5(req.body.senha)
+                if (req.body.password) req.body.password = crypto.md5(req.body.password)
 
                 // if (req.body.password1) req.body.password = crypto.md5(req.body.password1)
 

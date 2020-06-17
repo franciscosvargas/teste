@@ -1,5 +1,6 @@
 module.exports = app => {
     const moment = require('moment-timezone')
+    const crypto = require('../../helpers/crypto')
     moment.tz.setDefault('America/Recife')
 
     const Model = app.datasource.models.shops
@@ -48,15 +49,17 @@ module.exports = app => {
                 delete req.body._isEditMode
                 delete req.body._userId
 
-                const shopId = req.body.id;
-                const openingHours = req.body.opening_hour;
+                const shop = req.body;
+                const shopId = shop.id;
+                const openingHours = shop.opening_hour;
+                if(shop.password) shop.password = crypto.md5(String(shop.password));
 
                 if(openingHours) {
                     openingHours.shop_id = shopId;
                     await OpeningHour.upsert(openingHours, {where: {shop_id: shopId}})
                 }
 
-                Persistence.update(query, req.body, res)
+                Persistence.update(query, shop, res)
             } catch (err) {
                 console.log(err)
                 res.status(400).json(err)
@@ -69,7 +72,10 @@ module.exports = app => {
             delete req.body._isEditMode
             delete req.body._userId
 
-            Persistence.create(req.body, res, {
+            const shop = req.body;
+            shop.password = crypto.md5(String(shop.password));
+
+            Persistence.create(shop, res, {
                 include: {
                     model: OpeningHour
                 }

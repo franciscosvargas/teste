@@ -2,7 +2,10 @@ const callbackObject = require('./returnObject')
 
 module.exports = Model => ({
     create: (data, res, options) => Model.create(data, options)
-        .then(result => callbackObject.returnCreateSuccess(result, res))
+        .then(result => {
+            delete result.dataValues.password;
+            callbackObject.returnCreateSuccess(result, res)
+        })
         .catch(error => callbackObject.returnError(error, res)),
 
     createUser: (data, res) => Model.create(data)
