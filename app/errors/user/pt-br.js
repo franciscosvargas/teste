@@ -3,6 +3,11 @@ const name = {
     message: 'Nome é requerido!'
 }
 
+const login = {
+    title: 'Login',
+    message: 'Login deve ser um email válido!'
+}
+
 const email = {
     title: 'Email',
     message: 'Email é requerido!'
@@ -138,6 +143,7 @@ module.exports = {
     validateCpf: validateCpf,
     name: name,
     emailNotExist: emailNotExist,
+    login: login,
     email: email,
     email1: email1,
     email2: email2,

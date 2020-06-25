@@ -13,9 +13,7 @@ module.exports = app => {
         token: (object) => {
             const jwt = require('jsonwebtoken')
             const key = require('../config/key')
-            const token = jwt.sign(object, key.token, {algorithm: 'HS256'})
-
-            return token
+            return jwt.sign(object, key.token, {algorithm: 'HS256'})
         },
         active: () => {
             function digit4 () {

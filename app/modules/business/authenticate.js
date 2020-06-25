@@ -2,9 +2,8 @@ module.exports = app => {
     const Generator = require('../../helpers/generator')(app)
     // const SendEmail = require('../../helpers/sendEmail')(app)
     const moment = require('moment')
-    const Usuarios = app.datasource.models.users
+    const Users = app.datasource.models.users
     const Shop = app.datasource.models.shops
-    const Users = app.datasource.models.User
     const Driver = app.datasource.models.Driver
     const RunningDelivery = app.datasource.models.RunningDelivery
     const RunningTaxiDriver = app.datasource.models.RunningTaxiDriver
@@ -22,9 +21,12 @@ module.exports = app => {
                 const mod = {token: tokenGenerator, online: true}
 
                 object.online = true
+                delete object.password;
+                delete object.token;
+                delete object.password_recover_token;
 
-                Usuarios.update(mod, query)
-                    .then(() => res.status(200).json({token: tokenGenerator, object}))
+                Users.update(mod, query)
+                    .then(() => res.status(200).json({token: tokenGenerator, user: object}))
                     .catch(() => res.status(400).json({error: 'Error in data processing'}))
             } catch (err) {
                 console.log(err)
@@ -40,9 +42,12 @@ module.exports = app => {
                 const mod = {token: tokenGenerator, online: true}
 
                 object.online = true
+                delete object.password;
+                delete object.token;
+                delete object.password_recover_token;
 
                 Shop.update(mod, query)
-                    .then(() => res.status(200).json({token: tokenGenerator, object}))
+                    .then(() => res.status(200).json({token: tokenGenerator, shop: object}))
                     .catch(() => res.status(400).json({error: 'Error in data processing'}))
             } catch (err) {
                 console.log(err)
@@ -127,7 +132,8 @@ module.exports = app => {
             }
         }),
         driverLogout: object => Driver.update({status: false}, {where: {id: object.id}}),
-        userLogout: (object) => update => Users.update({token: ''}, {where: {id: object.id}}),
+        userLogout: (user) => Users.update({token: null}, {where: {id: user.object.id}}),
+        shopLogout: (shop) => Shop.update({token: null}, {where: {id: shop.object.id}}),
         mongodbStatus: object => async update => {
             await LogDriver.create({driver_id: object.id, status: false, description: 'Motorista efetuou o Logout'})
             return LastLocation.update({driver_id: object.id}, {$set: {status: false}})

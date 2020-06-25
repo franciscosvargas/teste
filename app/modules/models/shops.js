@@ -144,6 +144,7 @@ module.exports = function (sequelize, DataTypes) {
 
     Shop.associate = (models) => {
         Shop.hasOne(models.opening_hours);
+        Shop.belongsToMany(models.cashback_rules, {through: "re_cashback_rule_shop"});
     }
 
     return Shop;

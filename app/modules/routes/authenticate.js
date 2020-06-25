@@ -6,12 +6,15 @@ module.exports = app => {
     app.route(url)
         .post(Validate.authenticate, Controller.authenticate)
 
-    app.route(`${url}Shop`)
+    app.route(`${url}/shop`)
         .post(Validate.authenticate, Controller.authenticateShop)
 
     app.route(`${app.config.url}/me`)
         .get(app.jwt, Validate.me)
 
     app.route(`${app.config.url}/logout`)
-        .get(app.jwt, Validate.logout, Controller.logout)
+        .post(app.jwt, Validate.logout, Controller.logout)
+
+    app.route(`${app.config.url}/logout/shop`)
+        .post(app.jwtShop, Validate.logout, Controller.logoutShop)
 }

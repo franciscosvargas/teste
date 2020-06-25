@@ -9,6 +9,9 @@ module.exports = app => {
         .post(app.jwtShop, Controller.create)
         .put(app.jwtShop, Controller.update)
 
+    app.route(`${url}/shop/:id`)
+        .get(Controller.listByShopId)
+
     app.route(`${url}/:id`)
         .delete(app.jwtShop, Controller.delete)
 }

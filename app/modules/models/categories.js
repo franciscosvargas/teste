@@ -1,7 +1,7 @@
 /* jshint indent: 2 */
 
 module.exports = function (sequelize, DataTypes) {
-    return sequelize.define('categories', {
+    let Category = sequelize.define('categories', {
         id: {
             type: DataTypes.INTEGER(10).UNSIGNED,
             allowNull: false,
@@ -35,5 +35,11 @@ module.exports = function (sequelize, DataTypes) {
         }
     }, {
         tableName: 'categories'
-    })
+    });
+
+    Category.associate = (models) => {
+        Category.belongsToMany(models.cashback_rules, {through: "re_cashback_rule_category"});
+    }
+
+    return Category;
 }

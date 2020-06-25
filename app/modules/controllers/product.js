@@ -34,7 +34,7 @@ module.exports = app => {
         await VariationOption.destroy({
             where: {
                 variation_id: variationModel.id,
-                id: {$notIn: options.filter(e => e.id).map(e => e.id)}
+                id: { $notIn: options.filter(e => e.id).map(e => e.id) }
             }
         });
 
@@ -73,12 +73,12 @@ module.exports = app => {
     return {
         find: (req, res) => {
             const query = {
-                where: {$and: {shop_id: req.user.object.id}},
+                where: { $and: { shop_id: req.user.object.id } },
                 limit: parseInt(req.query.pageSize),
                 offset: req.query.pageNumber * req.query.pageSize,
                 include: [
-                    {model: Variation, include: [{model: VariationOption, as: 'options'}]},
-                    {model: Complement}
+                    { model: Variation, include: [{ model: VariationOption, as: 'options' }] },
+                    { model: Complement }
                 ]
             }
 
@@ -89,7 +89,7 @@ module.exports = app => {
                     query.where.$or = []
                     for (const key in filters) {
                         let tmp = {}
-                        tmp[key] = {$like: `%${filters[key]}%`}
+                        tmp[key] = { $like: `%${filters[key]}%` }
                         query.where.$or.push(tmp)
                     }
                 }
@@ -97,14 +97,14 @@ module.exports = app => {
             }
 
             Model.findAndCountAll(query)
-                .then(result => res.status(200).json({items: result.rows, totalCount: result.count}))
+                .then(result => res.status(200).json({ items: result.rows, totalCount: result.count }))
                 .catch(err => {
                     console.log(err)
                     res.status(500).json(err)
                 })
         },
         update: async (req, res) => {
-            const query = {id: req.body.id}
+            const query = { id: req.body.id }
             try {
                 const complements = req.body.complements
                 const variations = req.body.variations
@@ -133,12 +133,12 @@ module.exports = app => {
                     await Product.setVariations(variationsIds);
                 }
 
-                await Model.update(req.body, {where: query});
+                await Model.update(req.body, { where: query });
 
                 res.status(200).json(await Model.findByPk(productId, {
                     include: [
-                        {model: Variation, include: [{model: VariationOption, as: 'options'}]},
-                        {model: Complement}
+                        { model: Variation, include: [{ model: VariationOption, as: 'options' }] },
+                        { model: Complement }
                     ]
                 }))
             } catch (err) {
@@ -146,6 +146,15 @@ module.exports = app => {
                 res.status(400).json(err)
             }
         },
+        listByShopId: (req, res) =>
+            Persistence.listAllQuery({
+                where: {
+                    $and: [
+                        { shop_id: parseInt(req.params.id) },
+                    ]
+                }
+            }, res),
+
         delete: (req, res) => {
             Persistence.delete(req.params, res)
         },
@@ -176,8 +185,8 @@ module.exports = app => {
 
             res.status(201).json(await Model.findByPk(productId, {
                 include: [
-                    {model: Variation, include: [{model: VariationOption, as: 'options'}]},
-                    {model: Complement}
+                    { model: Variation, include: [{ model: VariationOption, as: 'options' }] },
+                    { model: Complement }
                 ]
             }));
         }

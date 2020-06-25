@@ -1,6 +1,6 @@
 module.exports = app => {
     const TypeVehicles = app.datasource.models.TypeVehicles
-    const User = app.datasource.models.User
+    const User = app.datasource.models.users
     const Driver = app.datasource.models.Driver
     const Vehicles = app.datasource.models.Vehicles
     const Help = require('../../helpers/upload')
@@ -13,7 +13,7 @@ module.exports = app => {
     return {
         create: (req, res, next) => {
             req.assert('name', Errors.name).notEmpty()
-            req.assert('login', Errors.email).isEmail()
+            req.assert('login', Errors.login).isEmail()
             req.assert('phone', Errors.phone).notEmpty()
             const errors = req.validationErrors()
 
@@ -130,22 +130,14 @@ module.exports = app => {
 
         uniqueStage: (req, res, next) => {
             const phone = Regex.phoneClean(req.body.phone)
-            const ddi = Regex.ddi(phone)
-            const ddd = Regex.ddd(phone)
-            const number = Regex.phone(phone)
             const query = {
                 where: {
-                    $or: [{
-                        $and: [{
-                            ddd: ddd
-                        }, {
-                            ddi: ddi
-                        }, {
-                            ddd: ddd
-                        }, {
-                            number: number
-                        }]
-                    },
+                    $or: [
+                        {
+                            phone: {
+                                $eq: phone
+                            }
+                        },
                         {
                             login: {
                                 $eq: req.body.email
@@ -153,11 +145,7 @@ module.exports = app => {
                         }
                     ]
                 },
-                include: [
-                    {model: Driver, attributes: ['id']},
-                    {model: Vehicles, attributes: ['plate', 'type_vehicle_id']}
-                ],
-                attributes: ['stage', 'id', 'first', 'login', 'cpf', 'ddd', 'ddi', 'number']
+                attributes: ['id', 'name', 'login', 'cpf', 'phone']
             }
             User.findOne(query)
                 .then(user => user ? res.status(400).json([{

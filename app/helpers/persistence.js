@@ -2,7 +2,10 @@ const callbackObject = require('./returnObject')
 
 module.exports = Model => ({
     create: (data, res, options) => Model.create(data, options)
-        .then(result => callbackObject.returnCreateSuccess(result, res))
+        .then(result => {
+            delete result.dataValues.password;
+            callbackObject.returnCreateSuccess(result, res)
+        })
         .catch(error => callbackObject.returnError(error, res)),
 
     createUser: (data, res) => Model.create(data)
@@ -17,11 +20,11 @@ module.exports = Model => ({
         .then(result => callbackObject.returnListSuccess(result, res))
         .catch(error => callbackObject.returnError(error, res)),
 
-    listAllQuery: (query, res) => Model.findAll(query)
+    listAllQuery: (query, res, options) => Model.findAll(Object.assign({}, query, options))
         .then(result => callbackObject.returnListSuccess(result, res))
         .catch(error => callbackObject.returnError(error, res)),
 
-    listOne: (query, res) => Model.findOne({ where: query })
+    listOne: (query, res, options) => Model.findOne(Object.assign({}, { where: query }, options))
         .then(result => callbackObject.returnListSuccess(result, res))
         .catch(error => callbackObject.returnError(error, res)),
 
