@@ -152,7 +152,11 @@ module.exports = app => {
                     $and: [
                         { shop_id: parseInt(req.params.id) },
                     ]
-                }
+                },
+                include: [
+                    { model: Variation, include: [{ model: VariationOption, as: 'options' }] },
+                    { model: Complement }
+                ]
             }, res),
 
         delete: (req, res) => {
