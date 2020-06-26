@@ -5,11 +5,14 @@ module.exports = app => {
     app.route(`${url}/find`)
         .get(Controller.find)
 
+
+
     app.route(`${url}`)
         .post(Controller.create)
         .put(Controller.update)
 
     app.route(`${url}/:id`)
+        .get(Controller.listByCategoryId)
         .delete(Controller.delete)
 
     app.route(`${url}/:id/online`)

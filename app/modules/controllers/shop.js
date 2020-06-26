@@ -30,21 +30,21 @@ module.exports = app => {
                     query.where.$or = []
                     for (const key in filters) {
                         let tmp = {}
-                        tmp[key] = {$like: `%${filters[key]}%`}
+                        tmp[key] = { $like: `%${filters[key]}%` }
                         query.where.$or.push(tmp)
                     }
                 }
-            } catch (e) {}
+            } catch (e) { }
 
             Model.findAndCountAll(query)
-                .then(result => res.status(200).json({items: result.rows, totalCount: result.count}))
+                .then(result => res.status(200).json({ items: result.rows, totalCount: result.count }))
                 .catch(err => {
                     console.log(err)
                     res.status(500).json(err)
                 })
         },
         update: async (req, res) => {
-            const query = {id: req.body.id}
+            const query = { id: req.body.id }
             try {
                 delete req.body._isEditMode
                 delete req.body._userId
@@ -54,9 +54,9 @@ module.exports = app => {
                 const openingHours = shop.opening_hour;
                 if(shop.password) shop.password = crypto.md5(String(shop.password));
 
-                if(openingHours) {
+                if (openingHours) {
                     openingHours.shop_id = shopId;
-                    await OpeningHour.upsert(openingHours, {where: {shop_id: shopId}})
+                    await OpeningHour.upsert(openingHours, { where: { shop_id: shopId } })
                 }
 
                 Persistence.update(query, shop, res)
@@ -65,6 +65,16 @@ module.exports = app => {
                 res.status(400).json(err)
             }
         },
+        listByCategoryId: (req, res) =>
+            Persistence.listAllQuery({
+                where: {
+                    $and: [
+                        { category_id: parseInt(req.params.id) },
+                    ]
+                }
+            }, res),
+
+
         delete: (req, res) => {
             Persistence.delete(req.params, res)
         },
@@ -81,7 +91,7 @@ module.exports = app => {
                 }
             })
         },
-        online: (req, res) => Persistence.update({id: req.params.id}, {online: true}, res),
-        offline: (req, res) => Persistence.update({id: req.params.id}, {online: false}, res)
+        online: (req, res) => Persistence.update({ id: req.params.id }, { online: true }, res),
+        offline: (req, res) => Persistence.update({ id: req.params.id }, { online: false }, res)
     }
 }
