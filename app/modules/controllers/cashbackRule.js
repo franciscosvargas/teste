@@ -1,6 +1,7 @@
 module.exports = app => {
     const Model = app.datasource.models.cashback_rules
     const Category = app.datasource.models.categories
+    const Sales = app.datasource.models.sales
     const Shop = app.datasource.models.shops
     const City = app.datasource.models.cities
     const Persistence = require('../../helpers/persistence')(Model)
@@ -55,6 +56,20 @@ module.exports = app => {
             Persistence.listAllQuery({where: req.params}, res, globalOptions)
         },
         delete: (req, res) => Persistence.delete(req.params, res),
-        disable: (req, res) => Persistence.update({id: req.params.id}, {status: "Desativado"}, res)
+        disable: (req, res) => Persistence.update({id: req.params.id}, {status: "Desativado"}, res),
+        count: async (req, res) => {
+            let cashbackRuleIdCriteria = req.params.cashback_rule_id ? {
+                $eq: req.params.cashback_rule_id
+            } : {
+                $not: null
+            };
+
+            let result = await Sales.count({
+                where: {
+                    cashback_rule_id: cashbackRuleIdCriteria
+                }
+            });
+            res.send({count: result});
+        }
     }
 }

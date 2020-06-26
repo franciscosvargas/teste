@@ -52,7 +52,7 @@ module.exports = app => {
                 const shop = req.body;
                 const shopId = shop.id;
                 const openingHours = shop.opening_hour;
-                if (shop.password) shop.password = crypto.md5(String(shop.password));
+                if(shop.password) shop.password = crypto.md5(String(shop.password));
 
                 if (openingHours) {
                     openingHours.shop_id = shopId;

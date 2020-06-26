@@ -29,6 +29,15 @@ module.exports = function (sequelize, DataTypes) {
             allowNull: true,
             defaultValue: '0'
         },
+        order: {
+            type: DataTypes.INTEGER(1),
+            allowNull: true
+        },
+        featured: {
+            type: DataTypes.BOOLEAN,
+            allowNull: true,
+            defaultValue: false
+        },
         image_url: {
             type: DataTypes.TEXT,
             allowNull: true
