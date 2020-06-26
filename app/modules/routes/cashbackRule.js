@@ -12,4 +12,7 @@ module.exports = app => {
 
     app.route(`${url}/:id`)
         .get(app.jwt, Controller.listOne)
+
+    app.route(`${url}/sales/count/:cashback_rule_id?`)
+        .get(app.jwt, Controller.count)
 }

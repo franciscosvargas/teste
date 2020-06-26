@@ -1,5 +1,6 @@
 module.exports = app => {
     const PromoCode = app.datasource.models.promocodes
+    const Sales = app.datasource.models.sales
     const Persistence = require('../../helpers/persistence')(PromoCode)
 
     return {
@@ -10,6 +11,20 @@ module.exports = app => {
             Persistence.listAllQueryWithJoin({where: req.params}, res)
         },
         delete: (req, res) => Persistence.delete(req.params, res),
-        disable: (req, res) => Persistence.update({id: req.params.id}, {status: "Desativado"}, res)
+        disable: (req, res) => Persistence.update({id: req.params.id}, {status: "Desativado"}, res),
+        count: async (req, res) => {
+            let cashbackRuleIdCriteria = req.params.promocode_id ? {
+                $eq: req.params.promocode_id
+            } : {
+                $not: null
+            };
+
+            let result = await Sales.count({
+                where: {
+                    promocode_id: cashbackRuleIdCriteria
+                }
+            });
+            res.send({count: result});
+        }
     }
 }
