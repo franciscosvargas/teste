@@ -1,6 +1,6 @@
 /* jshint indent: 2 */
 
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
   return sequelize.define('addresses', {
     id: {
       type: DataTypes.INTEGER(11).UNSIGNED,
@@ -18,6 +18,18 @@ module.exports = function(sequelize, DataTypes) {
     },
     deleted_at: {
       type: DataTypes.DATE,
+      allowNull: true
+    },
+    country: {
+      type: DataTypes.STRING(300),
+      allowNull: true
+    },
+    state: {
+      type: DataTypes.STRING(300),
+      allowNull: true
+    },
+    city: {
+      type: DataTypes.STRING(300),
       allowNull: true
     },
     country_id: {

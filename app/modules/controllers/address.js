@@ -19,7 +19,7 @@ module.exports = app => {
                     query.where.$or = []
                     for (const key in filters) {
                         let tmp = {}
-                        tmp[key] = {$like: `%${filters[key]}%`}
+                        tmp[key] = { $like: `%${filters[key]}%` }
                         query.where.$or.push(tmp)
                     }
                 }
@@ -27,14 +27,23 @@ module.exports = app => {
             }
 
             Model.findAll(query)
-                .then(result => res.status(200).json({items: result, totalCount: result.length}))
+                .then(result => res.status(200).json({ items: result, totalCount: result.length }))
                 .catch(err => {
                     console.log(err)
                     res.status(500).json(err)
                 })
         },
+
+        getIdById: (req, res) =>
+            Persistence.listAllQuery({
+                where: {
+                    id: parseInt(req.params.id)
+                },
+                attributes: { exclude: ['created_at', 'updated_at', 'deleted_at', 'country_id', 'state_id', 'city_id'] },
+            }, res),
+
         update: async (req, res) => {
-            const query = {id: req.body.id}
+            const query = { id: req.body.id }
             try {
                 delete req.body._isEditMode
                 delete req.body._userId
@@ -52,7 +61,7 @@ module.exports = app => {
         create: (req, res) => {
             delete req.body._isEditMode
             delete req.body._userId
-
+            console.log('req.body');
             Persistence.create(req.body, res)
         }
     }
