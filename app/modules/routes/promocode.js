@@ -17,6 +17,9 @@ module.exports = app => {
     app.route(`${url}/:id`)
         .get(app.jwt, Controller.listOne)
 
+    app.route(`${url}/code/:code`)
+        .get(Controller.listOne) //app.jwt, 
+
     app.route(`${url}/sales/count/:promocode_id?`)
         .get(app.jwt, Controller.count)
 }
