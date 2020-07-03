@@ -1,4 +1,5 @@
 module.exports = app => {
+    const Address = app.datasource.models.Address
     const moment = require('moment-timezone')
     const crypto = require('../../helpers/crypto')
     moment.tz.setDefault('America/Recife')
@@ -52,7 +53,7 @@ module.exports = app => {
                 const shop = req.body;
                 const shopId = shop.id;
                 const openingHours = shop.opening_hour;
-                if(shop.password) shop.password = crypto.md5(String(shop.password));
+                if (shop.password) shop.password = crypto.md5(String(shop.password));
 
                 if (openingHours) {
                     openingHours.shop_id = shopId;
@@ -74,6 +75,13 @@ module.exports = app => {
                 }
             }, res),
 
+        getIdByAddressId: (req, res) =>
+            Persistence.listAllQuery({
+                where: {
+                    id: parseInt(req.params.id)
+                },
+                attributes: ['address_id']
+            }, res),
 
         delete: (req, res) => {
             Persistence.delete(req.params, res)
