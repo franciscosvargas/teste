@@ -25,7 +25,7 @@ module.exports = app => {
                     query.where.$or = []
                     for (const key in filters) {
                         let tmp = {}
-                        tmp[key] = {$like: `%${filters[key]}%`}
+                        tmp[key] = { $like: `%${filters[key]}%` }
                         query.where.$or.push(tmp)
                     }
                 }
@@ -33,7 +33,7 @@ module.exports = app => {
             }
 
             Model.findAll(query)
-                .then(result => res.status(200).json({items: result, totalCount: result.length}))
+                .then(result => res.status(200).json({ items: result, totalCount: result.length }))
                 .catch(err => {
                     console.log(err)
                     res.status(500).json(err)
@@ -57,7 +57,7 @@ module.exports = app => {
                     query.where.$or = []
                     for (const key in filters) {
                         let tmp = {}
-                        tmp[key] = {$like: `%${filters[key]}%`}
+                        tmp[key] = { $like: `%${filters[key]}%` }
                         query.where.$or.push(tmp)
                     }
                 }
@@ -65,7 +65,7 @@ module.exports = app => {
             }
 
             Model.findAll(query)
-                .then(result => res.status(200).json({items: result, totalCount: result.length}))
+                .then(result => res.status(200).json({ items: result, totalCount: result.length }))
                 .catch(err => {
                     console.log(err)
                     res.status(500).json(err)
@@ -84,9 +84,9 @@ module.exports = app => {
 
                 const cashbackRule = await Business.findCashbackRuleForSale(sale);
                 sale.cashback_rule_id = cashbackRule ? cashbackRule.id : null;
-                sale.cashback_value = cashbackRule ? cashbackRule.percentage/100 * sale.total : null;
+                sale.cashback_value = cashbackRule ? cashbackRule.percentage / 100 * sale.total : null;
 
-                await Model.update(sale, {where: {id: sale.id}});
+                await Model.update(sale, { where: { id: sale.id } });
 
                 res.status(200).send(sale)
 
@@ -99,6 +99,7 @@ module.exports = app => {
             Persistence.delete(req.params, res)
         },
         create: async (req, res) => {
+            console.log('req.body: ', req.body);
             delete req.body._isEditMode
             delete req.body._userId
 
@@ -112,7 +113,7 @@ module.exports = app => {
             const cashbackRule = await Business.findCashbackRuleForSale(sale);
             if (cashbackRule) {
                 sale.cashback_rule_id = cashbackRule ? cashbackRule.id : null;
-                sale.cashback_value = cashbackRule ? cashbackRule.percentage/100 * sale.total: null;
+                sale.cashback_value = cashbackRule ? cashbackRule.percentage / 100 * sale.total : null;
             }
 
             res.status(201).json(await Model.create(sale));
