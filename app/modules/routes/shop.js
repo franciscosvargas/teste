@@ -15,6 +15,9 @@ module.exports = app => {
         .get(Controller.listByCategoryId)
         .delete(Controller.delete)
 
+    app.route(`${url}/:id/address`)
+        .get(Controller.getIdByAddressId)
+
     app.route(`${url}/:id/online`)
         .put(app.jwtShop, Controller.online)
 
