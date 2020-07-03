@@ -1,6 +1,6 @@
 module.exports = {
     token: '1a5H(qzO&1+!8M35tXvai3A*JF%Os]eOoG63/Oo+:1S(R[%x[js09UKDam0#853213213123123',
-    googleKey: 'AIzaSyBfPCWbg0Btyt9q5Q8vK2RoA4mDvqV43cQ',
+    googleKey: 'AIzaSyA3JCWk68Vxk8XzRxP2hoJUsNBwGlyIe98',
     // googleKey: 'AIzaSyC8fAkDoUGVCkWcxG770zERz6cpou4gYUo',
     twillo: {
         account: 'ACf4912767b42a20cb0fe24bb12282bdad',
