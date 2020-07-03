@@ -44,13 +44,12 @@ module.exports = app => {
 
         locationCalculateUser: async (req, res) => {
             try {
-                
+
                 // const returnCityGoogle = await Help.returnCityStateCountry({lat: req.body.clientLat, lng: req.body.clientLng})
                 // req.body.addressClient = returnCityGoogle.address
                 // const taxi = await Taxi.validateRates(req.body)
                 // const object = await Company.tratmentQuery(taxi)
-
-                const deliverySettings = await Settings.findAll({where: {type: 'delivery-tax'}});
+                const deliverySettings = await Settings.findAll({ where: { type: 'delivery-tax' } });
                 const deliveryTax = SettingsHelper.toSettingsObject(deliverySettings);
 
                 const result = await Help.calculatePointAddress({
@@ -116,7 +115,7 @@ module.exports = app => {
                     )
                     .catch(err => res.status(400).json(err))
             } else {
-                res.status(400).json([{title: 'Tipo de Pagamento', message: 'Error no tipo de pagamento!'}])
+                res.status(400).json([{ title: 'Tipo de Pagamento', message: 'Error no tipo de pagamento!' }])
             }
         },
 
@@ -164,7 +163,7 @@ module.exports = app => {
                     })
                     .catch(err => res.status(500).json(err))
             } else {
-                res.status(400).json({title: 'Tipo de Pagamento', message: 'Error no tipo de pagamento!'})
+                res.status(400).json({ title: 'Tipo de Pagamento', message: 'Error no tipo de pagamento!' })
             }
         },
 
@@ -175,8 +174,8 @@ module.exports = app => {
                         id: req.body.auxiliary
                     }, {
                         $or: [
-                            {company_id: req.body.company_id},
-                            {user_id: req.body.user_id}
+                            { company_id: req.body.company_id },
+                            { user_id: req.body.user_id }
                         ]
                     }, {
                         running_delivery_id: null
@@ -210,15 +209,15 @@ module.exports = app => {
                     await Business.transactionCardCielo(req.body)(returnCard)
                     if (returnCard.authorizationCode === '05') {
                         runningDelivery.running = 8
-                        await RunningDelivery.update({status: 8}, {where: {id: runningDelivery.running.id}})
+                        await RunningDelivery.update({ status: 8 }, { where: { id: runningDelivery.running.id } })
                     }
                     // res.io.emit('runningDelivery', {running: transactionCard.running.id})
-                    res.status(200).json(runningDelivery) 
+                    res.status(200).json(runningDelivery)
                 } catch (err) {
                     res.status(500).json(err)
                 }
             } else {
-                res.status(400).json({title: 'Cartão', message: 'Cartão é requerido!'})
+                res.status(400).json({ title: 'Cartão', message: 'Cartão é requerido!' })
             }
         },
 
