@@ -33,11 +33,11 @@
 // }
 
 module.exports = {
-    database: 'pede_delivery_app',
-    username: 'root',
-    password: 'root123#', //678bezao
+    database: 'pededeliveryapp2',
+    username: 'pededeliveryapp2',
+    password: 'Wc1b5!QV_e08', //678bezao
     params: {
-        host: 'localhost',
+        host: 'den1.mysql5.gear.host',
         port: 3306,
         timezone: '-03:00',
         dialect: 'mysql',
