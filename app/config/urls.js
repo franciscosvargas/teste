@@ -34,11 +34,11 @@
 
 
 module.exports = {
-    database: 'pede_delivery_app',//pededeliveryapp2
-    username: 'root',//pededeliveryapp2
-    password: 'root123#', //Wc1b5!QV_e08
+    database: 'pededeliveryapp2',//pededeliveryapp2
+    username: 'pededeliveryapp2',//pededeliveryapp2
+    password: 'Wc1b5!QV_e08', //Wc1b5!QV_e08
     params: {
-        host: 'localhost',//den1.mysql5.gear.host
+        host: 'den1.mysql5.gear.host',//den1.mysql5.gear.host
         port: 3306,
         timezone: '-03:00',
         dialect: 'mysql',
