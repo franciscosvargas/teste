@@ -18,10 +18,11 @@ module.exports = app => {
                     res.status(500).json(err)
                 })
         },
+
         find: (req, res) => {
             const query = {
-                where: {},
-                limit: 10
+                limit: 10,
+                offset: req.query.pageNumber * 10
             }
 
             try {
@@ -31,22 +32,28 @@ module.exports = app => {
                     query.where.$or = []
                     for (const key in filters) {
                         let tmp = {}
-                        tmp[key] = {$like: `%${filters[key]}%`}
+                        tmp[key] = { $like: `%${filters[key]}%` }
                         query.where.$or.push(tmp)
                     }
                 }
-            } catch (e) {
-            }
+            } catch (e) { }
 
-            Model.findAll(query)
-                .then(result => res.status(200).json({items: result, totalCount: result.length}))
+            Model.findAndCountAll(query)
+                .then(result => res.status(200).json({ items: result.rows, totalCount: result.count }))
                 .catch(err => {
                     console.log(err)
                     res.status(500).json(err)
                 })
+
+            // Model.findAll(query)
+            //     .then(result => res.status(200).json({items: result, totalCount: result.length}))
+            //     .catch(err => {
+            //         console.log(err)
+            //         res.status(500).json(err)
+            //     })
         },
         update: async (req, res) => {
-            const query = {id: req.body.id}
+            const query = { id: req.body.id }
             try {
                 delete req.body._isEditMode
                 delete req.body._userId
