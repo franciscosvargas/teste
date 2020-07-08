@@ -34,7 +34,7 @@
 
 
 module.exports = {
-    database: 'pededeliveryapp2',//pededeliveryapp2
+    database: 'pededeliveryapp2',//
     username: 'pededeliveryapp2',//pededeliveryapp2
     password: 'Wc1b5!QV_e08', //Wc1b5!QV_e08
     params: {
