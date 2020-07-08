@@ -8,7 +8,7 @@ module.exports = app => {
     return {
         findAll: (req, res) => {
             const query = {
-                where: { featured: false },
+                where: { hidden: false },
             }
 
             Model.findAll(query)
