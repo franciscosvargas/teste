@@ -75,6 +75,15 @@ module.exports = app => {
                 }
             }, res),
 
+        GetByShopId: (req, res) =>
+            Persistence.listAllQuery({
+                where: {
+                    $and: [
+                        { id: parseInt(req.params.id) },
+                    ]
+                }
+            }, res),
+
         getIdByAddressId: (req, res) =>
             Persistence.listAllQuery({
                 where: {
