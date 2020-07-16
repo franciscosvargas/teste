@@ -15,7 +15,7 @@ module.exports = app => {
         .put(app.jwt, Controller.disable)
 
     app.route(`${url}/:id`)
-        .get(app.jwt, Controller.listOne)
+        .get(Controller.listOne)
 
     app.route(`${url}/code/:code`)
         .get(Controller.listOne) //app.jwt, 
