@@ -20,6 +20,7 @@ module.exports = app => {
                 include: {
                     model: OpeningHour
                 },
+                attributes: { exclude: ['password'] },
                 limit: 10,
                 offset: req.query.pageNumber * 10
             }
@@ -45,7 +46,18 @@ module.exports = app => {
                 })
         },
         update: async (req, res) => {
-            const query = { id: req.body.id }
+            let query;
+            if (req.body.password === null) {
+                query = {
+                    id: req.body.id
+                }
+
+            } else {
+                query = {
+                    id: req.body.id,
+                }
+            }
+
             try {
                 delete req.body._isEditMode
                 delete req.body._userId

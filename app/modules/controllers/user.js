@@ -12,7 +12,7 @@ module.exports = app => {
     const Vehicles = app.datasource.models.Vehicles
     const RunningDelivery = app.datasource.models.RunningDelivery
     const RunningTaxiDriver = app.datasource.models.RunningTaxiDriver
-    const {pushNotificationDrivers, pushNotificationUser} = require('../business/user')(app)
+    const { pushNotificationDrivers, pushNotificationUser } = require('../business/user')(app)
     const Persistence = require('../../helpers/persistence')(User)
     const Bussiness = require('../business/user')(app)
     const crypto = require('../../helpers/crypto')
@@ -42,13 +42,13 @@ module.exports = app => {
             // Persistence.create(object, res)
 
             const user = await User.create(object)
-            const mod = {user_id: user.id, status: true}
+            const mod = { user_id: user.id, status: true }
             user.driver = await Driver.create(mod)
-            await LastLocation.create({driver_id: user.driver.id})
+            await LastLocation.create({ driver_id: user.driver.id })
             res.status(200).json(user)
         },
         createProvider: async (req, res) => {
-            let userData = {body: req.body.user}
+            let userData = { body: req.body.user }
             let companyData = req.body.company
 
             userData.body.is_provider = true
@@ -59,12 +59,12 @@ module.exports = app => {
             object.cpf = userData.body.cpf
 
             app.datasource.sequelize.transaction(t => {
-                return User.create(object, {transaction: t}).then(function (user) {
-                    return Driver.create({user_id: user.id, status: true}, {transaction: t}).then(function (driver) {
+                return User.create(object, { transaction: t }).then(function (user) {
+                    return Driver.create({ user_id: user.id, status: true }, { transaction: t }).then(function (driver) {
                         user.driver = driver
-                        return LastLocation.create({driver_id: user.driver.id}, {transaction: t}).then(function (lastLocation) {
+                        return LastLocation.create({ driver_id: user.driver.id }, { transaction: t }).then(function (lastLocation) {
                             companyData.user_id = user.id
-                            return Company.create(companyData, {transaction: t}).then(function (company) {
+                            return Company.create(companyData, { transaction: t }).then(function (company) {
                                 return res.status(200).json(user)
                             })
                         })
@@ -77,7 +77,7 @@ module.exports = app => {
             }).catch(function (err) {
                 // Transaction has been rolled back
                 // err is whatever rejected the promise chain returned to the transaction callback
-                res.status(500).json({message: err.errors[0].message})
+                res.status(500).json({ message: err.errors[0].message })
             })
         },
         update: async (req, res) => {
@@ -112,6 +112,7 @@ module.exports = app => {
                 // } else {
                 //     req.body.stage = 7
                 //     delete req.body.status
+                console.log('req.body.password: ', req.body.password);
                 Persistence.update(query, req.body, res)
                 // }
 
@@ -127,10 +128,10 @@ module.exports = app => {
         listAll: (req, res) => {
             let query = {}
             let driverQuery = {}
-            if (req.query.name) query = Object.assign({name: {$like: '%' + req.query.name + '%'}}, query)
-            if (req.query.cpf) query = Object.assign({cpf: req.query.cpf}, query)
-            if (req.query.email) query = Object.assign({email: req.query.email}, query)
-            if (req.query.active) driverQuery = Object.assign({active: req.query.active === 'true' ? true : false})
+            if (req.query.name) query = Object.assign({ name: { $like: '%' + req.query.name + '%' } }, query)
+            if (req.query.cpf) query = Object.assign({ cpf: req.query.cpf }, query)
+            if (req.query.email) query = Object.assign({ email: req.query.email }, query)
+            if (req.query.active) driverQuery = Object.assign({ active: req.query.active === 'true' ? true : false })
 
             console.log(driverQuery)
             Persistence.listAllPaginated({
@@ -162,7 +163,7 @@ module.exports = app => {
         forgot: (req, res) => {
             const query = {
                 where: {
-                    email: {$eq: req.body.email}
+                    email: { $eq: req.body.email }
                 }
             }
             User.findOne(query).then(user => {
@@ -180,7 +181,7 @@ module.exports = app => {
         resend: (req, res) => {
             req.user.phone = `+${req.user.ddi}${req.user.ddd}${req.user.number}`
             const object = Bussiness.resend(req)
-            Persistence.activeCode({id: req.params.id}, object, res)
+            Persistence.activeCode({ id: req.params.id }, object, res)
         },
         forgotSend: (req, res) => {
             const query = {
@@ -203,10 +204,10 @@ module.exports = app => {
             req.user.phone = `+${req.user.ddi}${req.user.ddd}${req.user.number}`
             const query = {
                 $and: [
-                    {id: req.user.id},
-                    {number: req.user.number},
-                    {ddi: req.user.ddi},
-                    {ddd: req.user.ddd}
+                    { id: req.user.id },
+                    { number: req.user.number },
+                    { ddi: req.user.ddi },
+                    { ddd: req.user.ddd }
                 ]
             }
             const object = Bussiness.resend(req)
@@ -330,12 +331,12 @@ module.exports = app => {
         isOpenRunning: async (req, res) => {
             try {
                 const delivery = await RunningDelivery.find({
-                    where: {$and: [{user_id: req.user.object.id}, {status: [2, 3, 4, 5]}]},
-                    include: {all: true}
+                    where: { $and: [{ user_id: req.user.object.id }, { status: [2, 3, 4, 5] }] },
+                    include: { all: true }
                 })
                 const particular = await RunningTaxiDriver.find({
-                    where: {$and: [{user_id: req.user.object.id}, {status: [2, 3, 4, 5]}]},
-                    include: {all: true}
+                    where: { $and: [{ user_id: req.user.object.id }, { status: [2, 3, 4, 5] }] },
+                    include: { all: true }
                 })
                 res.status(200).json({
                     delivery,
@@ -350,10 +351,10 @@ module.exports = app => {
             try {
                 if (parseInt(req.body.typeUser) === 1) {
                     const users = await Device.findAll({
-                        where: Device.sequelize.where(Device.sequelize.fn('LENGTH', Device.sequelize.col('tokenGcm')), {$gte: 10}),
+                        where: Device.sequelize.where(Device.sequelize.fn('LENGTH', Device.sequelize.col('tokenGcm')), { $gte: 10 }),
                         attributes: ['tokenGcm'],
                         raw: true,
-                        include: [{model: User, attributes: ['id'], required: true}]
+                        include: [{ model: User, attributes: ['id'], required: true }]
                     })
                     users.map(async value => {
                         try {
@@ -365,10 +366,10 @@ module.exports = app => {
                     res.status(200).json({})
                 } else {
                     const drivers = await Device.findAll({
-                        where: Device.sequelize.where(Device.sequelize.fn('LENGTH', Device.sequelize.col('tokenGcm')), {$gte: 10}),
+                        where: Device.sequelize.where(Device.sequelize.fn('LENGTH', Device.sequelize.col('tokenGcm')), { $gte: 10 }),
                         attributes: ['tokenGcm'],
                         raw: true,
-                        include: [{model: Driver, attributes: ['id'], required: true}]
+                        include: [{ model: Driver, attributes: ['id'], required: true }]
                     })
                     drivers.map(async value => {
                         await pushNotificationDrivers(req.body)(value)
