@@ -5,6 +5,9 @@ module.exports = app => {
     app.route(`${url}/find`)
         .get(app.jwtShop, Controller.find)
 
+    app.route(`${url}/shop/:id`)
+        .get(Controller.findAllByShopId)//app.jwtShop
+
     app.route(`${url}`)
         .post(app.jwtShop, Controller.create)
         .put(app.jwtShop, Controller.update)

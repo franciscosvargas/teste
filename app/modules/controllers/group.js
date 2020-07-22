@@ -8,7 +8,7 @@ module.exports = app => {
     return {
         findAll: (req, res) => {
             const query = {
-                where: {shop_id: req.user.object.id}
+                where: { shop_id: req.user.object.id }
             }
 
             Model.findAll(query)
@@ -18,9 +18,24 @@ module.exports = app => {
                     res.status(500).json(err)
                 })
         },
+
+        findAllByShopId: (req, res) => {
+            const query = {
+                where: { shop_id: req.params.id },
+                attributes: { exclude: ['created_at', 'updated_at', 'deleted_at', 'shop_id'] }
+            }
+
+            Model.findAll(query)
+                .then(result => res.status(200).json(result))
+                .catch(err => {
+                    console.log(err)
+                    res.status(500).json(err)
+                })
+        },
+
         find: (req, res) => {
             const query = {
-                where: {$and: {shop_id: req.user.object.id}},
+                where: { $and: { shop_id: req.user.object.id } },
                 limit: parseInt(req.query.pageSize),
                 offset: req.query.pageNumber * req.query.pageSize
             }
@@ -32,7 +47,7 @@ module.exports = app => {
                     query.where.$or = []
                     for (const key in filters) {
                         let tmp = {}
-                        tmp[key] = {$like: `%${filters[key]}%`}
+                        tmp[key] = { $like: `%${filters[key]}%` }
                         query.where.$or.push(tmp)
                     }
                 }
@@ -40,14 +55,14 @@ module.exports = app => {
             }
 
             Model.findAndCountAll(query)
-                .then(result => res.status(200).json({items: result.rows, totalCount: result.count}))
+                .then(result => res.status(200).json({ items: result.rows, totalCount: result.count }))
                 .catch(err => {
                     console.log(err)
                     res.status(500).json(err)
                 })
         },
         update: async (req, res) => {
-            const query = {id: req.body.id}
+            const query = { id: req.body.id }
             try {
                 delete req.body._isEditMode
                 delete req.body._userId
