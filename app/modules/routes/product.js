@@ -9,7 +9,7 @@ module.exports = app => {
         .post(app.jwtShop, Controller.create)
         .put(app.jwtShop, Controller.update)
 
-    app.route(`${url}/shop/:id`)
+    app.route(`${url}/shop/:id/:id_group`)
         .get(Controller.listByShopId)
 
     app.route(`${url}/:id`)

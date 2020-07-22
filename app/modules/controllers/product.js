@@ -103,6 +103,7 @@ module.exports = app => {
                     res.status(500).json(err)
                 })
         },
+
         update: async (req, res) => {
             const query = { id: req.body.id }
             try {
@@ -151,6 +152,7 @@ module.exports = app => {
                 where: {
                     $and: [
                         { shop_id: parseInt(req.params.id) },
+                        { group_id: req.params.id_group }
                     ]
                 },
                 include: [
