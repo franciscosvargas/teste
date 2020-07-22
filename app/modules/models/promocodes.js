@@ -1,6 +1,6 @@
 /* jshint indent: 2 */
 
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
   let Promocode = sequelize.define('promocodes', {
     id: {
       type: DataTypes.INTEGER(11),
@@ -91,6 +91,10 @@ module.exports = function(sequelize, DataTypes) {
     },
     fixed_price: {
       type: DataTypes.DECIMAL,
+      allowNull: true,
+    },
+    desconto_percentual: {
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
     budget_responsibility: {
