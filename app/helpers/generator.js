@@ -1,5 +1,5 @@
 module.exports = app => {
-    function makeid (length) {
+    function makeid(length) {
         var result = ''
         var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
         var charactersLength = characters.length
@@ -13,10 +13,10 @@ module.exports = app => {
         token: (object) => {
             const jwt = require('jsonwebtoken')
             const key = require('../config/key')
-            return jwt.sign(object, key.token, {algorithm: 'HS256'})
+            return jwt.sign(object, key.token, { algorithm: 'HS256', expiresIn: '30d' })
         },
         active: () => {
-            function digit4 () {
+            function digit4() {
                 return Math.floor((1 + Math.random()) * 0x10000)
             }
 
@@ -25,7 +25,7 @@ module.exports = app => {
         plate: () => `ìboltt-${Math.floor((Math.random()) * 0x10000)}`,
         promocode: () => Math.random().toString(36).slice(2),
         memberCode: () => {
-            function digit4 () {
+            function digit4() {
                 return Math.floor((1 + Math.random()) * 0x10000)
             }
 
@@ -41,7 +41,7 @@ module.exports = app => {
             return monthDay + month + year + randomUnique
         },
         generateUUID: () => {
-            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
                 var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
                 return v.toString(16);
             });
