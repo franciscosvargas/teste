@@ -1,5 +1,7 @@
+const { and } = require('sequelize')
+
 module.exports = app => {
-    const Address = app.datasource.models.Address
+    const Addresses = app.datasource.models.addresses
     const moment = require('moment-timezone')
     const crypto = require('../../helpers/crypto')
     moment.tz.setDefault('America/Recife')
@@ -80,11 +82,30 @@ module.exports = app => {
         },
         listByCategoryId: (req, res) =>
             Persistence.listAllQuery({
+                include: {
+                    model: Addresses
+                },
                 where: {
                     $and: [
-                        { category_id: parseInt(req.params.id) },
+                        { category_id: parseInt(req.params.id) }
                     ]
                 }
+            }, res),
+
+        listByCategoryIdWhereCityName: (req, res) =>
+            Persistence.listAllQuery({
+
+                include: {
+                    model: Addresses,
+                    where: { city: req.params.city }
+
+                },
+                where: {
+                    $and: [
+                        { category_id: +req.params.id }
+                    ]
+                },
+
             }, res),
 
         GetByShopId: (req, res) =>

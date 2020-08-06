@@ -15,6 +15,9 @@ module.exports = app => {
         .get(Controller.listByCategoryId)
         .delete(Controller.delete)
 
+    app.route(`${url}/:id/:city`)
+        .get(Controller.listByCategoryIdWhereCityName)
+
     app.route(`${url}/detail/:id`)
         .get(Controller.GetByShopId)
 
