@@ -19,9 +19,11 @@ module.exports = app => {
                     //         $like: `%${req.body.name.toUpperCase()}%`
                     //     }
                 },
-                include: {
-                    model: OpeningHour
-                },
+                include: [
+                    { model: OpeningHour },
+                    { model: Addresses }
+                ],
+
                 attributes: { exclude: ['password'] },
                 limit: 10,
                 offset: req.query.pageNumber * 10
@@ -67,6 +69,7 @@ module.exports = app => {
                 const shop = req.body;
                 const shopId = shop.id;
                 const openingHours = shop.opening_hour;
+                const address = shop.address;
                 if (shop.password) shop.password = crypto.md5(String(shop.password));
 
                 if (openingHours) {
