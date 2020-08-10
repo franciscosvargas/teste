@@ -105,7 +105,9 @@ module.exports = app => {
                 },
                 where: {
                     $and: [
-                        { category_id: +req.params.id }
+                        { category_id: +req.params.id },
+                        { online: true },
+                        { Active: true },
                     ]
                 },
 
