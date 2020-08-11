@@ -100,12 +100,12 @@ module.exports = app => {
 
                 include: {
                     model: Addresses,
-                    where: { city: req.params.city }
+                    where: { city: 'Canaa dos carajas' }
 
                 },
                 where: {
                     $and: [
-                        { category_id: +req.params.id },
+                        // { category_id: +req.params.id },
                         { online: true },
                         { Active: true },
                     ]
@@ -117,7 +117,7 @@ module.exports = app => {
             Persistence.listAllQuery({
                 where: {
                     $and: [
-                        { id: parseInt(req.params.id) },
+                        { id: 7 },
                     ]
                 }
             }, res),
@@ -127,7 +127,8 @@ module.exports = app => {
                 where: {
                     id: parseInt(req.params.id)
                 },
-                attributes: ['address_id']
+                // attributes: ['address_id']
+                attributes: { exclude: ['address'] },
             }, res),
 
         delete: (req, res) => {
