@@ -2,9 +2,10 @@ module.exports = app => {
     const moment = require('moment-timezone')
     moment.tz.setDefault('America/Recife')
 
-    const Model = app.datasource.models.delivers
+    const Model = app.datasource.models.delivers;
     const LastLocation = app.datasource.models.last_locations;
-    const Persistence = require('../../helpers/persistence')(Model)
+    const Persistence = require('../../helpers/persistence')(Model);
+    const Addresses = app.datasource.models.addresses;
 
     // const Device = app.datasource.models.Devices
     // const Driver = app.datasource.models.Driver
@@ -31,10 +32,13 @@ module.exports = app => {
                     //         $like: `%${req.body.name.toUpperCase()}%`
                     //     }
                 },
-                include: {
-                    model: LastLocation,
-                    as: "last_location"
-                },
+                include: [
+                    {
+                        model: LastLocation,
+                        as: "last_location"
+                    },
+                    { model: Addresses }
+                ],
                 limit: 10
             }
 
@@ -45,14 +49,14 @@ module.exports = app => {
                     query.where.$or = []
                     for (const key in filters) {
                         let tmp = {}
-                        tmp[key] = {$like: `%${filters[key]}%`}
+                        tmp[key] = { $like: `%${filters[key]}%` }
                         query.where.$or.push(tmp)
                     }
                 }
-            } catch (e) {}
+            } catch (e) { }
 
             Model.findAll(query)
-                .then(result => res.status(200).json({items: result, totalCount: result.length}))
+                .then(result => res.status(200).json({ items: result, totalCount: result.length }))
                 .catch(err => {
                     console.log(err)
                     res.status(500).json(err)
@@ -66,17 +70,17 @@ module.exports = app => {
                 let deliverId = req.body.id;
                 const Deliver = await Model.findByPk(deliverId);
 
-                if(!Deliver) {
+                if (!Deliver) {
                     res.status(404).json();
                 } else {
 
                     const lastLocation = req.body.last_location;
                     if (lastLocation) {
                         lastLocation.deliver_id = deliverId;
-                        await LastLocation.upsert(lastLocation, {where: {deliver_id: deliverId}});
+                        await LastLocation.upsert(lastLocation, { where: { deliver_id: deliverId } });
                     }
 
-                    await Persistence.update({id: deliverId}, req.body, res);
+                    await Persistence.update({ id: deliverId }, req.body, res);
                 }
             } catch (err) {
                 console.log(err)

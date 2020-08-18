@@ -87,6 +87,7 @@ module.exports = function (sequelize, DataTypes) {
     Delivers.associate = (models) => {
         Delivers.hasOne(models.last_locations);
         Delivers.hasMany(models.sales);
+        Delivers.belongsTo(models.addresses, { through: "addresses" });
     }
 
     return Delivers;
