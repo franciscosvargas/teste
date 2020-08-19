@@ -62,6 +62,36 @@ module.exports = app => {
                     res.status(500).json(err)
                 })
         },
+
+        getByDeliverWhereStatusIsActive: (req, res) => {
+            const query = {
+                where: { status: 'Ativo' },
+                include: {
+                    model: Addresses
+                },
+            }
+
+            try {
+                const filters = JSON.parse(req.query.filter)
+
+                if (filters) {
+                    query.where.$or = []
+                    for (const key in filters) {
+                        let tmp = {}
+                        tmp[key] = { $like: `%${filters[key]}%` }
+                        query.where.$or.push(tmp)
+                    }
+                }
+            } catch (e) { }
+
+            Model.findAll(query)
+                .then(result => res.status(200).json({ items: result, totalCount: result.length }))
+                .catch(err => {
+                    console.log(err)
+                    res.status(500).json(err)
+                })
+        },
+
         update: async (req, res) => {
             try {
                 delete req.body._isEditMode

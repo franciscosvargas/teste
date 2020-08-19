@@ -8,6 +8,9 @@ module.exports = app => {
     app.route(`${url}/find`)
         .get(Controller.find)
 
+    app.route(`${url}/active`)
+        .get(Controller.getByDeliverWhereStatusIsActive)
+
     app.route(`${url}`)
         .post(Controller.create)
         .put(Controller.update)
