@@ -95,12 +95,21 @@ module.exports = app => {
                 }
             }, res),
 
+        getIdByAddressId: (req, res) =>
+            Persistence.listAllQuery({
+                where: {
+                    id: parseInt(req.params.id)
+                },
+                // attributes: ['address_id']
+                attributes: { exclude: ['address'] },
+            }, res),
+
         listByCategoryIdWhereCityName: (req, res) =>
             Persistence.listAllQuery({
 
                 include: {
                     model: Addresses,
-                    where: { city: 'Canaa dos carajas' }
+                    where: { city: req.params.city }
 
                 },
                 where: {
@@ -120,15 +129,6 @@ module.exports = app => {
                         { id: 7 },
                     ]
                 }
-            }, res),
-
-        getIdByAddressId: (req, res) =>
-            Persistence.listAllQuery({
-                where: {
-                    id: parseInt(req.params.id)
-                },
-                // attributes: ['address_id']
-                attributes: { exclude: ['address'] },
             }, res),
 
         delete: (req, res) => {

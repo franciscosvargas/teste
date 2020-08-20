@@ -38,7 +38,7 @@ module.exports = {
     username: 'pededeliveryapp2',//pededeliveryapp2
     password: 'Wc1b5!QV_e08', //Wc1b5!QV_e08
     params: {
-        host: 'den1.mysql5.gear.host',//den1.mysql5.gear.host
+        host: '167.172.158.239',//'den1.mysql5.gear.host',//den1.mysql5.gear.host
         port: 3306,
         timezone: '-03:00',
         dialect: 'mysql',

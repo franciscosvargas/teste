@@ -1,5 +1,6 @@
 module.exports = app => {
     const url = `${app.config.url}/shop`
+    const url2 = `${app.config.url}/`
     const Controller = require('../controllers/shop')(app)
 
     app.route(`${url}/find`)
@@ -21,7 +22,7 @@ module.exports = app => {
     app.route(`${url}/detail/:id`)
         .get(Controller.GetByShopId)
 
-    app.route(`${url}/:id/address`)
+        app.route(`${url2}:id/address`)
         .get(Controller.getIdByAddressId)
 
     app.route(`${url}/:id/online`)
