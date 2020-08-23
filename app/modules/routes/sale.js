@@ -8,6 +8,9 @@ module.exports = app => {
     app.route(`${url}/find`)
         .get(Controller.find)
 
+    app.route(`${url}/coleta`)
+        .get(Controller.GetBySalesInStateisAguardandoColeta);
+
     app.route(`${url}/quickSearch`)
         .get(Controller.quickSearch)
 

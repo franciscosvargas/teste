@@ -109,7 +109,7 @@ module.exports = app => {
 
                 include: {
                     model: Addresses,
-                    where: { city: req.params.city }
+                    // where: { city: req.params.city }
 
                 },
                 where: {

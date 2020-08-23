@@ -39,6 +39,16 @@ module.exports = app => {
                     res.status(500).json(err)
                 })
         },
+
+        GetBySalesInStateisAguardandoColeta: (req, res) =>
+            Persistence.listAllQuery({
+                where: {
+                    $and: [
+                        { status: 'Aguardando Coleta' }
+                    ]
+                }
+            }, res),
+
         quickSearch: (req, res) => {
             const query = {
                 where: {
