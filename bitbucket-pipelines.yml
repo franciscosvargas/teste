@@ -17,6 +17,7 @@ pipelines:
             variables:
               SSH_USER: $SSH_USER
               SERVER: $SSH_HOST
+              SSH_KEY: $SSH_KEY
               PORT: $SSH_PORT
               COMMAND: 'pm2 stop new_api_server'
    
