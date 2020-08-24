@@ -6,7 +6,8 @@ pipelines:
         caches:
           - node
         script: 
-          - yarn install
+          - echo "node image"
+          #- yarn install
           
     - step:
         name: Deploy to digitalocean
