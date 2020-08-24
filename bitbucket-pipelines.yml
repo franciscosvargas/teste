@@ -1,0 +1,37 @@
+image: node:10.15.3
+
+pipelines:
+  default:
+    - step:
+        caches:
+          - node
+        script: 
+          - yarn install
+          
+    - step:
+        name: Deploy to digitalocean
+        script:
+          - echo "Deploy to digitalocean"
+          - pipe: atlassian/ssh-run:0.2.6
+            variables:
+              SSH_USER: $SSH_USER
+              SERVER: $SSH_HOST
+              SSH_KEY: $SSH_KEY
+              PORT: $SSH_PORT
+              COMMAND: 'pm2 stop new_api_server'
+   
+   #branches:
+      #deploy-master:
+        #- step:
+            #name: Deploy to digitalocean
+            #deployment: production
+            #trigger: manual
+            #script:
+              #- echo "Deploy to digitalocean"
+              #- pipe: atlassian/ssh-run:0.2.6
+                  #variables:
+                    #SSH_USER: $SSH_USER
+                    #SERVER: $SSH_HOST
+                    #SSH_KEY: $SSH_KEY
+                    #PORT: $SSH_PORT
+                    #COMMAND: 'pm2 stop new_api_server'
