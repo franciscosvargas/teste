@@ -1,3 +1,6 @@
+const { where } = require('sequelize')
+const { query } = require('winston')
+
 module.exports = app => {
     const moment = require('moment-timezone')
     moment.tz.setDefault('America/Recife')
@@ -19,7 +22,7 @@ module.exports = app => {
                     query.where.$or = []
                     for (const key in filters) {
                         let tmp = {}
-                        tmp[key] = {$like: `%${filters[key]}%`}
+                        tmp[key] = { $like: `%${filters[key]}%` }
                         query.where.$or.push(tmp)
                     }
                 }
@@ -27,14 +30,22 @@ module.exports = app => {
             }
 
             Model.findAll(query)
-                .then(result => res.status(200).json({items: result, totalCount: result.length}))
+                .then(result => res.status(200).json({ items: result, totalCount: result.length }))
                 .catch(err => {
                     console.log(err)
                     res.status(500).json(err)
                 })
         },
+
+        listAllOrderByState: (req, res) => {
+            Persistence.listAllQuery({
+                where: { state_id: req.params.id },
+                //attributes: { exclude: ['created_at', 'deleted_at', 'updated_at', 'state_id', 'iso', 'iso_ddd', 'status'] }
+            }, res)
+        },
+
         update: async (req, res) => {
-            const query = {id: req.body.id}
+            const query = { id: req.body.id }
             try {
                 delete req.body._isEditMode
                 delete req.body._userId
