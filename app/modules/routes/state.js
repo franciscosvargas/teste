@@ -9,6 +9,7 @@ module.exports = app => {
         .get(Controller.find)
 
     app.route(`${url}`)
+    .get(Controller.listAll)
         .post(Controller.create)
         .put(Controller.update)
 
