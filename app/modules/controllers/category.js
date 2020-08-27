@@ -9,6 +9,7 @@ module.exports = app => {
         findAll: (req, res) => {
             const query = {
                 where: { hidden: false },
+                attributes: { exclude: ['created_at', 'deleted_at', 'updated_at'] },
             }
 
             Model.findAll(query)
