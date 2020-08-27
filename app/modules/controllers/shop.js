@@ -2,6 +2,7 @@ const { and } = require('sequelize')
 
 module.exports = app => {
     const Addresses = app.datasource.models.addresses
+    const Categories = app.datasource.models.categories
     const moment = require('moment-timezone')
     const crypto = require('../../helpers/crypto')
     moment.tz.setDefault('America/Recife')
@@ -20,11 +21,20 @@ module.exports = app => {
                     //     }
                 },
                 include: [
-                    { model: OpeningHour },
-                    { model: Addresses }
+                    {
+                        model: OpeningHour,
+                        attributes: { exclude: ['created_at', 'deleted_at', 'updated_at', 'shop_id'] },
+                    },
+                    {
+                        model: Addresses,
+                        attributes: { exclude: ['created_at', 'deleted_at', 'updated_at', 'title', 'country_id', 'state_id', 'city_id'] },
+                    },
+                    {
+                        model: Categories,
+                        attributes: { exclude: ['created_at', 'deleted_at', 'updated_at', 'hidden', 'order', 'featured', 'image_url'] },
+                    },
                 ],
-
-                attributes: { exclude: ['password'] },
+                attributes: { exclude: ['created_at', 'deleted_at', 'updated_at', 'token', 'password'] },
                 limit: 10,
                 offset: req.query.pageNumber * 10
             }

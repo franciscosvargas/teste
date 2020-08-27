@@ -67,8 +67,10 @@ module.exports = app => {
             const query = {
                 where: { status: 'Ativo' },
                 include: {
-                    model: Addresses
+                    model: Addresses,
+                    attributes: { exclude: ['created_at', 'deleted_at', 'updated_at', 'title', 'country_id', 'state_id', 'city_id'] },
                 },
+                attributes: { exclude: ['avatar', 'cnh', 'company_document', 'created_at', 'deleted_at', 'updated_at', 'last_online_at', 'type_vehicle', 'vehicle_color', 'vehicle_model', 'vehicle_plate'] }
             }
 
             try {

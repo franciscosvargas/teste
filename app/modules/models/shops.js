@@ -146,6 +146,7 @@ module.exports = function (sequelize, DataTypes) {
         Shop.hasOne(models.opening_hours);
         Shop.belongsToMany(models.cashback_rules, { through: "re_cashback_rule_shop" });
         Shop.belongsTo(models.addresses, { through: "addresses" });
+        Shop.belongsTo(models.categories, { through: "categories" });
     }
 
     return Shop;
