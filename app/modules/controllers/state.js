@@ -33,6 +33,13 @@ module.exports = app => {
                     res.status(500).json(err)
                 })
         },
+
+        listAll: (req, res) => {
+            Persistence.listAllQuery({
+                attributes: { exclude: ['created_at', 'deleted_at', 'updated_at', 'country_id', 'iso','status'] }
+            },res)
+        },
+
         update: async (req, res) => {
             const query = {id: req.body.id}
             try {
