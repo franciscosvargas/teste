@@ -136,7 +136,7 @@ module.exports = app => {
             Persistence.listAllQuery({
                 where: {
                     $and: [
-                        { id: 7 },
+                        { id: req.params.id },
                     ]
                 }
             }, res),

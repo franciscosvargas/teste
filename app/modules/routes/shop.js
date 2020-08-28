@@ -19,10 +19,13 @@ module.exports = app => {
     app.route(`${url}/:id/:city`)
         .get(Controller.listByCategoryIdWhereCityName)
 
+    app.route(`${url2}detail/:id`)
+        .get(Controller.GetByShopId)
+
     app.route(`${url}/detail/:id`)
         .get(Controller.GetByShopId)
 
-        app.route(`${url2}:id/address`)
+    app.route(`${url2}:id/address`)
         .get(Controller.getIdByAddressId)
 
     app.route(`${url}/:id/online`)
