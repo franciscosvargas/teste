@@ -105,6 +105,18 @@ module.exports = app => {
                 }
             }, res),
 
+        listAll: (req, res) =>
+            Persistence.listAllQuery({
+                include: {
+                    model: Addresses,
+                    attributes: ['country', 'state', 'city', 'neighborhood', 'zipcode', 'street', 'number','id'],
+                },
+                where: {},
+                attributes: { exclude: ['category', 'category_id', 'description', 'deliver_type', 'ie', 'image_file', 'image_file', 'image_url', 'login', 'online', 'opening_hour', 'owner_email', 'owner_name', 'owner_phone', 'owner_whatsapp', 'payment_type', 'token', 'created_at', 'updated_at', 'deleted_at', 'company_name', 'cnpj', 'password', 'active', ''] },
+            }, res),
+
+
+
         getIdByAddressId: (req, res) =>
             Persistence.listAllQuery({
                 where: {
