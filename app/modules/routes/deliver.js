@@ -12,7 +12,7 @@ module.exports = app => {
         .get(Controller.getByDeliverWhereStatusIsActive)
 
     app.route(`${url}`)
-        .post(Controller.create)
+        .post(Validate.create, Controller.create)
         .put(Controller.update)
 
     app.route(`${url}/:id`)

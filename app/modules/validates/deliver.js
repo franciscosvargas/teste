@@ -13,8 +13,11 @@ module.exports = app => {
     return {
         create: (req, res, next) => {
             req.assert('name', Errors.name).notEmpty()
-            req.assert('login', Errors.email).isEmail()
+            //req.assert('login', Errors.email).isEmail()
             req.assert('phone', Errors.phone).notEmpty()
+            req.assert('email', Errors.email).notEmpty()
+            req.assert('email', Errors.login).isEmail()
+            req.assert('password', Errors.password).notEmpty()
             const errors = req.validationErrors()
 
             errors ? res.status(400).json(errors) : next()
