@@ -40,6 +40,48 @@ module.exports = app => {
                 })
         },
 
+        findByDeliver: (req, res) => {
+
+            const { deliver_id, status } = req.query
+
+            const query = {
+                where: {
+                   deliver_id,
+                }
+            }
+
+            if(status)
+                query.where.status = status
+
+            Model.findAll(query)
+                .then(result => res.status(200).json({ items: result, totalCount: result.length }))
+                .catch(err => {
+                    console.log(err)
+                    res.status(500).json(err)
+                })
+        },
+        updateStatusAndDeliver: (req, res) => {
+
+            const { id } = req.params
+            const { deliver_id, status } = req.body
+
+            const query = {
+                where: {
+                   id
+                }
+            }
+
+            if(status)
+                query.where.status = status
+
+            Model.findAll(query)
+                .then(result => res.status(200).json({ items: result, totalCount: result.length }))
+                .catch(err => {
+                    console.log(err)
+                    res.status(500).json(err)
+                })
+        },
+
         GetBySalesInStateisAguardandoColeta: (req, res) =>
             Persistence.listAllQuery({
                 where: {
@@ -125,6 +167,8 @@ module.exports = app => {
                 sale.cashback_rule_id = cashbackRule ? cashbackRule.id : null;
                 sale.cashback_value = cashbackRule ? cashbackRule.percentage / 100 * sale.total : null;
             }
+
+            console.log('passou por tudo')
 
             res.status(201).json(await Model.create(sale));
         }

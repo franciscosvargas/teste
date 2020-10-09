@@ -1,12 +1,18 @@
 module.exports = app => {
     const url = `${app.config.url}/sale`
     const Controller = require('../controllers/sale')(app)
-    // const Validate = require('../validates/sale')(app)
+    const Validate = require('../validates/sale')(app)
 
     // const Help = require('../../helpers/upload')
 
     app.route(`${url}/find`)
         .get(Controller.find)
+
+    app.route(`${url}/findByDeliver`)
+        .get(Controller.findByDeliver)
+
+    app.route(`${url}/statusAndDeliver/:id`)
+        .put(Controller.updateStatusAndDeliver)
 
     app.route(`${url}/coleta`)
         .get(Controller.GetBySalesInStateisAguardandoColeta);
@@ -20,4 +26,6 @@ module.exports = app => {
 
     app.route(`${url}/:id`)
         .delete(Controller.delete)
+    
+    
 }
