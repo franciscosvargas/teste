@@ -21,6 +21,9 @@ module.exports = app => {
     app.route(`${url}/forgot`)
          .post(Validate.forgot, Controller.forgot)
 
+    app.route(`${url}/dailyEarnings`)
+        .get(app.jwtDeliver, Controller.fetchDailyEarnings)
+
     // app.route(`${url}/:id/send/email`)
     //     .get(app.jwt, Validate.listOne, Controller.sendEmail)
     //

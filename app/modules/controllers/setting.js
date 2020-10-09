@@ -64,6 +64,27 @@ module.exports = app => {
                 console.log(err)
                 res.status(400).json(err)
             }
+        },
+
+        updateDeliverDiscount: async (req, res) => {
+            try {
+                const { value } = req.body
+
+                const query = {
+                    where: {
+                        type: 'DELIVER_DISCOUNT',
+                        name: 'PRIMARY_DELIVER_DISCOUNT'
+                    }
+                }
+    
+                const id = await Model.update({ value }, query)
+                const data = await Model.find(query)
+                res.json(data)
+                
+            } catch (err) {
+                console.log(err)
+                res.status(400).json(err)
+            }
         }
     }
 }

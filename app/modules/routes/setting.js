@@ -5,6 +5,11 @@ module.exports = app => {
     app.route(`${url}/:type`)
         .get(app.jwt, Controller.find)
 
+    app.route(`${url}/deliverDiscount`)
+        .patch(Controller.updateDeliverDiscount)
+
     app.route(`${url}/:type`)
         .put(app.jwt, Controller.update)
+
+    
 }

@@ -28,6 +28,21 @@ module.exports = app => {
             Sale.findOne(query)
                 .then(user => !user ? res.status(400).json([Errors.shopNotEqual]) : next())
                 .catch(err => res.status(500).json(err))
+        },
+
+        findByStatus: async (req, res, next) => {
+
+            if(!req.query.status)
+                return res.status(400).json([Errors.missingStatus])
+            
+            next()
+        },
+
+        findByDate: async (req, res, next) => {
+            if(!req.query.date)
+                return res.status(400).json([Errors.missingDate])
+            
+            next()
         }
     }
 }

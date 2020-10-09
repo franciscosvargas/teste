@@ -1,6 +1,7 @@
 module.exports = app => {
     const moment = require('moment-timezone')
     moment.tz.setDefault('America/Recife')
+    const sequelize = require('sequelize')
 
     const Model = app.datasource.models.sales;
     const Persistence = require('../../helpers/persistence')(Model)
@@ -54,6 +55,38 @@ module.exports = app => {
 
             if(status)
                 query.where.status = status
+
+            Model.findAll(query)
+                .then(result => res.status(200).json({ items: result, totalCount: result.length }))
+                .catch(err => {
+                    console.log(err)
+                    res.status(500).json(err)
+                })
+        },
+
+        findByStatus: (req, res) => {
+            const { status } = req.query
+
+            const query = {
+                where: {
+                   status
+                }
+            }
+
+            Model.findAll(query)
+                .then(result => res.status(200).json({ items: result, totalCount: result.length }))
+                .catch(err => {
+                    console.log(err)
+                    res.status(500).json(err)
+                })
+        },
+
+        findByDate: (req, res) => {
+            const { date } = req.query
+
+            const query = {
+                where: sequelize.where(sequelize.fn('date', sequelize.col('created_at')), '=', date)
+            }
 
             Model.findAll(query)
                 .then(result => res.status(200).json({ items: result, totalCount: result.length }))

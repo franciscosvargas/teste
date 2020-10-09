@@ -7,9 +7,15 @@ module.exports = app => {
 
     app.route(`${url}/find`)
         .get(Controller.find)
+    
+    app.route(`${url}/findByStatus`)
+        .get(Validate.findByStatus, Controller.findByStatus)
 
     app.route(`${url}/findByDeliver`)
         .get(app.jwtDeliver, Controller.findByDeliver)
+
+    app.route(`${url}/findByDate`)
+        .get(app.jwtDeliver, Validate.findByDate, Controller.findByDate)
 
     app.route(`${url}/statusAndDeliver/:id`)
         .put(app.jwtShop, Validate.updateByShop, Controller.updateStatusAndDeliver)

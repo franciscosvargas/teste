@@ -2,26 +2,16 @@ module.exports = app => {
     const moment = require('moment-timezone')
     moment.tz.setDefault('America/Recife')
 
+    const sequelize = require('sequelize')
+
     const Model = app.datasource.models.delivers;
+    const Sales = app.datasource.models.sales;
+    const Settings = app.datasource.models.settings;
     const LastLocation = app.datasource.models.last_locations;
     const Persistence = require('../../helpers/persistence')(Model);
     const Addresses = app.datasource.models.addresses;
 
-    // const Device = app.datasource.models.Devices
-    // const Driver = app.datasource.models.Driver
-    // const LastLocation = app.datasource.models.LastLocation
-    // const Documents = app.datasource.models.Documents
-    // const Company = app.datasource.models.Company
-    // const Bank = app.datasource.models.Bank
-    // const Card = app.datasource.models.Card
-    // const Vehicles = app.datasource.models.Vehicles
-    // const RunningDelivery = app.datasource.models.RunningDelivery
-    // const RunningTaxiDriver = app.datasource.models.RunningTaxiDriver
-    // const {pushNotificationDrivers, pushNotificationUser} = require('../business/user')(app)
     const Bussiness = require('../business/user')(app)
-    // const crypto = require('../../helpers/crypto')
-    // const Upload = require('../../helpers/aws-s3')
-    // const Cpf = require('cpf_cnpj').CPF
 
     const crypto = require('../../helpers/crypto')
 
@@ -165,6 +155,51 @@ module.exports = app => {
                 }
                 Persistence.update(query, mod, res)
             })
+        },
+
+        fetchDailyEarnings: async (req, res) => {
+
+            const { id } = req.user.object
+
+            const date = moment().format('YYYY-MM-DD')
+            const query = {
+                where: {
+                    deliver_id: id,
+                    status: 'Delivered',
+                    $and: sequelize.where(sequelize.fn('date', sequelize.col('created_at')), '=', date)
+                }
+            }
+            const settingsQuery = {
+                where: {
+                    type: 'DELIVER_DISCOUNT',
+                    name: 'PRIMARY_DELIVER_DISCOUNT'
+                }
+            }
+            
+
+            const response = {
+                rides: 0,
+                totalAmount: 0,
+                liquidAmount: 0
+            }
+            
+            const sales = await Sales.findAll(query)
+
+            response.rides = sales.length
+            
+            sales.forEach(sale => {
+                response.totalAmount += parseFloat(sale.delivery_tax)
+            })
+
+            const deliverDiscount = await Settings.find(settingsQuery)
+
+            const discount = parseFloat(deliverDiscount.value)
+
+            const outcome = parseFloat(response.totalAmount*(discount/100));
+
+            response.liquidAmount = response.totalAmount - outcome
+
+            return res.json(response)
         },
 
         // create: (req, res) => {
