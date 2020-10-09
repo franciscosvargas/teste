@@ -4,6 +4,7 @@ module.exports = app => {
     const moment = require('moment')
     const Users = app.datasource.models.users
     const Shop = app.datasource.models.shops
+    const Deliver = app.datasource.models.delivers
     const Driver = app.datasource.models.Driver
     const RunningDelivery = app.datasource.models.RunningDelivery
     const RunningTaxiDriver = app.datasource.models.RunningTaxiDriver
@@ -47,6 +48,27 @@ module.exports = app => {
                 delete object.password_recover_token;
 
                 Shop.update(mod, query)
+                    .then(() => res.status(200).json({token: tokenGenerator, shop: object}))
+                    .catch(() => res.status(400).json({error: 'Error in data processing'}))
+            } catch (err) {
+                console.log(err)
+                res.status(400).json({error: 'Error in data processing'})
+            }
+        },
+        authenticateDeliver: res => (object) => {
+            try {
+                const payload = {id: object.id, name: object.name, master: object.master}
+                const tokenGenerator = Generator.token(payload)
+
+                const query = {where: {id: object.id}}
+                const mod = {token: tokenGenerator, online: true}
+
+                object.online = true
+                delete object.password;
+                delete object.token;
+                delete object.password_recover_token;
+
+                Deliver.update(mod, query)
                     .then(() => res.status(200).json({token: tokenGenerator, shop: object}))
                     .catch(() => res.status(400).json({error: 'Error in data processing'}))
             } catch (err) {
@@ -134,6 +156,12 @@ module.exports = app => {
         driverLogout: object => Driver.update({status: false}, {where: {id: object.id}}),
         userLogout: (user) => Users.update({token: null}, {where: {id: user.object.id}}),
         shopLogout: (shop) => Shop.update({token: null}, {where: {id: shop.object.id}}),
+        deliverLogout: (deliver) => {
+            Deliver.update({
+                token: null, 
+                online: false 
+            }, { where: {id: deliver.object.id}})
+        },
         mongodbStatus: object => async update => {
             await LogDriver.create({driver_id: object.id, status: false, description: 'Motorista efetuou o Logout'})
             return LastLocation.update({driver_id: object.id}, {$set: {status: false}})

@@ -42,7 +42,7 @@ module.exports = (app) => {
 
             database.models = loadModels(sequelize)
 
-            sequelize.sync({ force: true }).done(() => database)
+            //sequelize.sync().done(() => database)
 
         }
         return database

@@ -63,6 +63,7 @@ app.datasource = datasource(app)
 
 app.jwt = require('./app/helpers/jwt')(app).validate
 app.jwtShop = require('./app/helpers/jwt')(app).validateShop
+app.jwtDeliver = require('./app/helpers/jwt')(app).validateDelivery
 
 const port = process.env.PORT || 3000
 

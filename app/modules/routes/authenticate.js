@@ -20,4 +20,7 @@ module.exports = app => {
 
     app.route(`${app.config.url}/logout/shop`)
         .post(app.jwtShop, Validate.logout, Controller.logoutShop)
+    
+    app.route(`${app.config.url}/logout/deliver`)
+        .post(app.jwtDeliver, Validate.logout, Controller.logoutDeliver)
 }

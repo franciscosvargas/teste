@@ -58,26 +58,30 @@ module.exports = app => {
 
             const passwordEncrypted = crypto.md5(String(password))
 
-            const deliver = await Deliver.findAll({
+            const deliver = await Deliver.findOne({
                 where: {
+                    email: email.toLowerCase(),
+                    password: passwordEncrypted
                 },
             })
 
-
-            if(deliver) {
-                res.status(200).json(deliver)
-            } else {
-                res.status(400).send()
-            }
-
-
+            if(deliver) 
+                return Business.authenticateDeliver(res)(deliver.dataValues)
+                
+            res.status(400).json([{title: 'Login', message: 'Login ou senha Inválido!'}])
+            
         },
+
         logout: async (req, res) => {
             await Business.userLogout(req.user)
             res.status(200).json([{title: 'Sair', message: 'Saindo do sistema!'}])
         },
         logoutShop: async (req, res) => {
             await Business.shopLogout(req.user)
+            res.status(200).json([{title: 'Sair', message: 'Saindo do sistema!'}])
+        },
+        logoutDeliver: async (req, res) => {
+            await Business.deliverLogout(req.user)
             res.status(200).json([{title: 'Sair', message: 'Saindo do sistema!'}])
         }
     }
