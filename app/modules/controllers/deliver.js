@@ -18,7 +18,7 @@ module.exports = app => {
     // const RunningDelivery = app.datasource.models.RunningDelivery
     // const RunningTaxiDriver = app.datasource.models.RunningTaxiDriver
     // const {pushNotificationDrivers, pushNotificationUser} = require('../business/user')(app)
-    // const Bussiness = require('../business/user')(app)
+    const Bussiness = require('../business/user')(app)
     // const crypto = require('../../helpers/crypto')
     // const Upload = require('../../helpers/aws-s3')
     // const Cpf = require('cpf_cnpj').CPF
@@ -144,7 +144,28 @@ module.exports = app => {
                 }).catch(error => {
                     return res.status(400).json(error)
                 })
-        }
+        },
+
+        forgot: (req, res) => {
+
+            const { email } = req.body
+
+            const query = {
+                where: { 
+                    email: {
+                        $eq: email.toLowerCase()
+                    } 
+                }
+            }
+            
+            Model.findOne(query).then(user => {
+                const object = Bussiness.forgot(user)
+                const mod = {
+                    forgot: object.forgot
+                }
+                Persistence.update(query, mod, res)
+            })
+        },
 
         // create: (req, res) => {
         //     Bussiness.create(req)
@@ -284,23 +305,7 @@ module.exports = app => {
         //     }
         //     Persistence.update(query, mod, res)
         // },
-        // forgot: (req, res) => {
-        //     const query = {
-        //         where: {
-        //             email: {$eq: req.body.email}
-        //         }
-        //     }
-        //     User.findOne(query).then(user => {
-        //         const object = Bussiness.forgot(user)
-        //         const mod = {
-        //             forgot: object.forgot
-        //         }
-        //         const query = {
-        //             email: req.body.email
-        //         }
-        //         Persistence.update(query, mod, res)
-        //     })
-        // },
+        // 
         //
         // resend: (req, res) => {
         //     req.user.phone = `+${req.user.ddi}${req.user.ddd}${req.user.number}`

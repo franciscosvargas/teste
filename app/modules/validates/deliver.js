@@ -1,6 +1,6 @@
 module.exports = app => {
     const TypeVehicles = app.datasource.models.TypeVehicles
-    const User = app.datasource.models.User
+    const User = app.datasource.models.delivers
     const Driver = app.datasource.models.Driver
     const Vehicles = app.datasource.models.Vehicles
     const Help = require('../../helpers/upload')
@@ -238,10 +238,12 @@ module.exports = app => {
                 .catch(err => res.status(500).json(err))
         },
         forgot: (req, res, next) => {
+
+            const { email } = req.body
             const query = {
                 where: {
-                    login: {
-                        $eq: req.body.email.toLowerCase()
+                    email: {
+                        $eq: email.toLowerCase()
                     }
                 }
             }

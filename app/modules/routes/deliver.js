@@ -17,6 +17,9 @@ module.exports = app => {
 
     app.route(`${url}/:id`)
         .delete(Controller.delete)
+        
+    app.route(`${url}/forgot`)
+         .post(Validate.forgot, Controller.forgot)
 
     // app.route(`${url}/:id/send/email`)
     //     .get(app.jwt, Validate.listOne, Controller.sendEmail)
@@ -40,8 +43,7 @@ module.exports = app => {
     // app.route(`${url}/:id/block`)
     //     .post(app.jwt, Validate.isAdmin, Controller.blockUser)
     //
-    // app.route(`${url}/forgot`)
-    //     .post(Validate.forgot, Controller.forgot)
+    // 
     //
     // app.route(`${url}/forgot/send`)
     //     .post(Validate.resendPhone, Controller.resendPhone)
