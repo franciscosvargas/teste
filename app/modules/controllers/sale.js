@@ -42,11 +42,13 @@ module.exports = app => {
 
         findByDeliver: (req, res) => {
 
-            const { deliver_id, status } = req.query
+            const { id } = req.user.object
+
+            const { status } = req.query
 
             const query = {
                 where: {
-                   deliver_id,
+                   deliver_id: id,
                 }
             }
 
@@ -60,26 +62,27 @@ module.exports = app => {
                     res.status(500).json(err)
                 })
         },
-        updateStatusAndDeliver: (req, res) => {
+
+        updateStatusAndDeliver: async (req, res) => {
 
             const { id } = req.params
             const { deliver_id, status } = req.body
 
-            const query = {
-                where: {
-                   id
-                }
-            }
+            const sale = {}
+
+            if(deliver_id)
+                sale.deliver_id = deliver_id
 
             if(status)
-                query.where.status = status
-
-            Model.findAll(query)
-                .then(result => res.status(200).json({ items: result, totalCount: result.length }))
-                .catch(err => {
-                    console.log(err)
-                    res.status(500).json(err)
-                })
+                sale.status = status
+            
+            try {
+                const data = await Model.update(sale, { where: { id } });
+                res.json(data.userData)
+            } catch (error) {
+                console.log(err)
+                res.status(400).json(err)
+            }
         },
 
         GetBySalesInStateisAguardandoColeta: (req, res) =>
@@ -123,6 +126,7 @@ module.exports = app => {
                     res.status(500).json(err)
                 })
         },
+
         update: async (req, res) => {
             try {
                 delete req.body._isEditMode
@@ -147,9 +151,11 @@ module.exports = app => {
                 res.status(400).json(err)
             }
         },
+
         delete: (req, res) => {
             Persistence.delete(req.params, res)
         },
+        
         create: async (req, res) => {
             console.log('req.body: ', req.body);
             delete req.body._isEditMode

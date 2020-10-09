@@ -9,10 +9,10 @@ module.exports = app => {
         .get(Controller.find)
 
     app.route(`${url}/findByDeliver`)
-        .get(Controller.findByDeliver)
+        .get(app.jwtDeliver, Controller.findByDeliver)
 
     app.route(`${url}/statusAndDeliver/:id`)
-        .put(Controller.updateStatusAndDeliver)
+        .put(app.jwtShop, Validate.updateByShop, Controller.updateStatusAndDeliver)
 
     app.route(`${url}/coleta`)
         .get(Controller.GetBySalesInStateisAguardandoColeta);
