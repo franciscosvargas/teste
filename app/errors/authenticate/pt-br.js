@@ -2,6 +2,11 @@ const login = {
     title: 'Login',
     message: 'login é requerido!'
 }
+
+const email = {
+    title: 'Email',
+    message: 'Email é requerido!'
+}
 const password = {
     title: 'Senha',
     message: 'Senha é requerido!'
@@ -17,8 +22,9 @@ const authenticate = {
 }
 
 module.exports = {
-    login: login,
-    phone: phone,
-    authenticate: authenticate,
-    password: password
+    login,
+    email,
+    phone,
+    authenticate,
+    password,
 }

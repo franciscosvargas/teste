@@ -24,22 +24,30 @@ const loadModels = (sequelize) => {
 }
 
 module.exports = (app) => {
-    if (!database) {
-        const config = app.config
-        const sequelize = new Sequelize(
-            config.database,
-            config.username,
-            config.password,
-            config.params
-        )
-        database = {
-            sequelize,
-            Sequelize,
-            models: {}
-        }
 
-        database.models = loadModels(sequelize)
-        sequelize.sync().done(() => database)
+    try {
+        if (!database) {
+            const config = app.config
+            const sequelize = new Sequelize(
+                config.database,
+                config.username,
+                config.password,
+                config.params
+            )
+            database = {
+                sequelize,
+                Sequelize,
+                models: {}
+            }
+
+            database.models = loadModels(sequelize)
+
+            sequelize.sync({ force: true }).done(() => database)
+
+        }
+        return database
+
+    } catch (error) {
+        console.log('error', error)
     }
-    return database
 }

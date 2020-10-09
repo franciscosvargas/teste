@@ -30,10 +30,11 @@ module.exports = function (sequelize, DataTypes) {
         },
         email: {
             type: DataTypes.STRING(200),
-            allowNull: false
+            allowNull: false,
+            unique: true
         },
         password: {
-            type: DataTypes.STRING(10),
+            type: DataTypes.STRING(200),
             allowNull: false
         },
         whatsapp: {
@@ -86,7 +87,7 @@ module.exports = function (sequelize, DataTypes) {
         },
         cnh: {
             type: DataTypes.TEXT,
-            allowNull: true
+            allowNull: true,
         }
     }, {
         tableName: 'delivers'
@@ -95,7 +96,7 @@ module.exports = function (sequelize, DataTypes) {
     Delivers.associate = (models) => {
         Delivers.hasOne(models.last_locations);
         Delivers.hasMany(models.sales);
-        Delivers.belongsTo(models.addresses, { through: "addresses" });
+        //Delivers.belongsTo(models.addresses, { through: "addresses" });
     }
 
     return Delivers;

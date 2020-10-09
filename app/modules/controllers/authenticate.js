@@ -10,6 +10,8 @@ module.exports = app => {
     const Address = app.datasource.models.Address
     const Card = app.datasource.models.Card
     const Documents = app.datasource.models.Documents
+    const Deliver = app.datasource.models.delivers
+
     const Regex = require('../../helpers/regex')
     const Business = require('../business/authenticate')(app)
     const crypto = require('../../helpers/crypto')
@@ -48,6 +50,27 @@ module.exports = app => {
             } else {
                 res.status(400).json([{title: 'Login', message: 'Login ou senha Inválido!'}])
             }
+        },
+
+        authenticateDeliver: async (req, res) => {
+
+            const { email, password } = req.body
+
+            const passwordEncrypted = crypto.md5(String(password))
+
+            const deliver = await Deliver.findAll({
+                where: {
+                },
+            })
+
+
+            if(deliver) {
+                res.status(200).json(deliver)
+            } else {
+                res.status(400).send()
+            }
+
+
         },
         logout: async (req, res) => {
             await Business.userLogout(req.user)

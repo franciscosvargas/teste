@@ -9,6 +9,9 @@ module.exports = app => {
     app.route(`${url}/shop`)
         .post(Validate.authenticate, Controller.authenticateShop)
 
+    app.route(`${url}/deliver`)
+        .post(Validate.authenticateWithEmail, Controller.authenticateDeliver)
+
     app.route(`${app.config.url}/me`)
         .get(app.jwt, Validate.me)
 

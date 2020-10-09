@@ -23,6 +23,8 @@ module.exports = app => {
     // const Upload = require('../../helpers/aws-s3')
     // const Cpf = require('cpf_cnpj').CPF
 
+    const crypto = require('../../helpers/crypto')
+
     return {
         find: (req, res) => {
             const query = {
@@ -119,19 +121,29 @@ module.exports = app => {
                 res.status(400).json(err)
             }
         },
+
         delete: (req, res) => {
             Persistence.delete(req.params, res)
         },
-        create: (req, res) => {
-            delete req.body._isEditMode
-            delete req.body._userId
 
-            Persistence.create(req.body, res, {
+        create: async (req, res) => {
+            delete req.body._isEditMode
+            delete req.body._userIdt
+            
+            const passwordEncrypted = crypto.md5(req.body.password)
+            
+            req.body.password = passwordEncrypted
+            
+            await Model.create(req.body, res, {
                 include: {
-                    model: LastLocation,
-                    as: "last_location"
-                }
-            })
+                        model: LastLocation,
+                        as: "last_location"
+                    }
+                }).then(deliver => {
+                    return res.json({ deliver, a:'teste'})
+                }).catch(error => {
+                    return res.status(400).json(error)
+                })
         }
 
         // create: (req, res) => {
