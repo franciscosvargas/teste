@@ -62,14 +62,13 @@ module.exports = app => {
 
                 const query = {where: {id: object.id}}
                 const mod = {token: tokenGenerator, online: true}
-
-                object.online = true
+                
                 delete object.password;
                 delete object.token;
                 delete object.password_recover_token;
 
                 Deliver.update(mod, query)
-                    .then(() => res.status(200).json({token: tokenGenerator, shop: object}))
+                    .then(() => res.status(200).json({token: tokenGenerator, deliver: object}))
                     .catch(() => res.status(400).json({error: 'Error in data processing'}))
             } catch (err) {
                 console.log(err)

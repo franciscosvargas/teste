@@ -7,6 +7,9 @@ module.exports = app => {
 
     app.route(`${url}/find`)
         .get(Controller.find)
+    
+    app.route(`${url}/findOnlineLocation`)
+        .get(Controller.findOnlineLocation)
 
     app.route(`${url}/active`)
         .get(Controller.getByDeliverWhereStatusIsActive)
@@ -23,6 +26,9 @@ module.exports = app => {
 
     app.route(`${url}/dailyEarnings`)
         .get(app.jwtDeliver, Controller.fetchDailyEarnings)
+
+    app.route(`${url}/status/:id`)
+        .patch(Controller.changeStatus)
 
     // app.route(`${url}/:id/send/email`)
     //     .get(app.jwt, Validate.listOne, Controller.sendEmail)

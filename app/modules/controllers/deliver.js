@@ -202,6 +202,78 @@ module.exports = app => {
             return res.json(response)
         },
 
+        changeStatus: async (req, res) => {
+
+            try {
+                const { id } = req.params
+
+                const { dataValues } = await Model.findById(id)
+
+                const status = dataValues.status === 'Offline' 
+                    ? 'Available'
+                    : 'Offline'
+
+
+                const query = {
+                    where: { id }
+                }
+
+                const toUpdate = {
+                    status,
+                    last_online_at: new Date(Date.now())
+                }
+
+                await Model.update(toUpdate, query)
+
+                dataValues.status = status
+
+                delete dataValues.password
+
+                return res.json(dataValues)
+
+            } catch (error) {
+                return res.status(400).json([error])
+            }
+
+        },
+
+        findOnlineLocation: async (req, res) => {
+
+            const query = {
+                attributes: [
+                    'id',
+                    'name',
+                    'avatar'
+                ],
+                where: {
+                    status: 'Available'
+                }
+            }
+
+            const lastLocations = []
+
+            const delivers = await Model.findAll(query)
+
+            Promise.all(
+                delivers.map(async deliver => {
+                    const location = await LastLocation.findOne({
+                        where: {
+                            deliver_id: deliver.id
+                        }
+                    })
+
+                    if(location) {
+                        lastLocations.push({
+                            deliver,
+                            location
+                        })
+                    }
+                })
+            )
+
+            res.json(lastLocations)
+        }
+
         // create: (req, res) => {
         //     Bussiness.create(req)
         //         .then(object => res.status(200).json(object))
