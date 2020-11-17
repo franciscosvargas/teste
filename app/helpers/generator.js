@@ -15,6 +15,22 @@ module.exports = app => {
             const key = require('../config/key')
             return jwt.sign(object, key.token, { algorithm: 'HS256', expiresIn: '30d' })
         },
+        tokenAdmin: (object) => {
+            const jwt = require('jsonwebtoken')
+            const key = require('../config/key')
+            return jwt.sign(object, key.tokenAdmin, { algorithm: 'HS256', expiresIn: '30d' })
+        },
+        tokenShop: (object) => {
+            const jwt = require('jsonwebtoken')
+            const key = require('../config/key')
+            return jwt.sign(object, key.tokenShop, { algorithm: 'HS256', expiresIn: '30d' })
+        },
+        tokenDeliver: (object) => {
+            const jwt = require('jsonwebtoken')
+            const key = require('../config/key')
+            return jwt.sign(object, key.tokenDeliver, { algorithm: 'HS256', expiresIn: '30d' })
+        },
+        
         active: () => {
             function digit4() {
                 return Math.floor((1 + Math.random()) * 0x10000)

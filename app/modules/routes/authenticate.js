@@ -3,8 +3,6 @@ module.exports = app => {
     const Controller = require('../controllers/authenticate')(app)
     const Validate = require('../validates/authenticate')(app)
 
-    app.route(url)
-        .post(Validate.authenticate, Controller.authenticate)
 
     app.route(`${url}/shop`)
         .post(Validate.authenticate, Controller.authenticateShop)

@@ -1,5 +1,8 @@
 module.exports = {
     token: '1a5H(qzO&1+!8M35tXvai3A*JF%Os]eOoG63/Oo+:1S(R[%x[js09UKDam0#853213213123123',
+    tokenAdmin: 'fe30be8dba83e79011a571b22c8ba24d',
+    tokenShop: 'cbcd5b6ad4c0f725378919029171e3f5',
+    tokenDeliver: '59b9910743121571502a095af64d1e32',
     googleKey: 'AIzaSyA3JCWk68Vxk8XzRxP2hoJUsNBwGlyIe98',
     // googleKey: 'AIzaSyC8fAkDoUGVCkWcxG770zERz6cpou4gYUo',
     twillo: {

@@ -16,7 +16,7 @@ module.exports = app => {
         authenticate: res => (object) => {
             try {
                 const payload = {id: object.id, name: object.name, master: object.master}
-                const tokenGenerator = Generator.token(payload)
+                const tokenGenerator = Generator.tokenAdmin(payload)
 
                 const query = {where: {id: object.id}}
                 const mod = {token: tokenGenerator, online: true}
@@ -37,7 +37,7 @@ module.exports = app => {
         authenticateShop: res => (object) => {
             try {
                 const payload = {id: object.id, name: object.name, master: object.master}
-                const tokenGenerator = Generator.token(payload)
+                const tokenGenerator = Generator.tokenShop(payload)
 
                 const query = {where: {id: object.id}}
                 const mod = {token: tokenGenerator, online: true}
@@ -58,7 +58,7 @@ module.exports = app => {
         authenticateDeliver: res => (object) => {
             try {
                 const payload = {id: object.id, name: object.name, master: object.master}
-                const tokenGenerator = Generator.token(payload)
+                const tokenGenerator = Generator.tokenDeliver(payload)
 
                 const query = {where: {id: object.id}}
                 const mod = {token: tokenGenerator, online: true}

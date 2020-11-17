@@ -4,7 +4,8 @@
   "description": "IUVO Club",
   "main": "app.js",
   "scripts": {
-    "dev": "set DEBUG=express:* & nodemon app.js",
+    "debug": "set DEBUG=express:* & nodemon app.js",
+    "dev": "nodemon app.js",
     "start": "node app.js",
     "lint": "eslint '**/*.js' ",
     "migrate": "mysql -u root  iuvo_club < dump.sql",

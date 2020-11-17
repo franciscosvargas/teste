@@ -11,17 +11,12 @@ const compression = require('compression')
 const validator = require('express-validator')
 const validateFormat = require('./app/errors/validate')
 const pdf = require('express-pdf')
-
-// const https = require('https')
 const fs = require('fs')
-// const privateKey = fs.readFileSync('/etc/letsencrypt/live/pedeae.delivery/privkey.pem', 'utf8')
-// const certificate = fs.readFileSync('/etc/letsencrypt/live/pedeae.delivery/fullchain.pem', 'utf8')
 
-// const log = require('./app/helpers/logApi').log
-
-// mongoDB
-// require('./app/databases/mongodb')
 require('./app/databases/mysql')
+
+try {
+
 
 var rawBodySaver = function (req, res, buf, encoding) {
     if (buf && buf.length) {
@@ -145,3 +140,7 @@ app.use((req, res) => res.status(404).json({ error: 'Route not found' }))
 server.listen(port)
 
 module.exports = app
+
+} catch (err) {
+    console.log('ERROR', err)
+}
